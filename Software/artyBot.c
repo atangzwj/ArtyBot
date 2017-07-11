@@ -51,21 +51,34 @@ void motorSwitch() {
    }
 }
 
-void measureSpeed() {
-   print("Measuring speed...\n\r");
+//  (milestone 3)
+void displaySpeed() {
+   double motor_speed[2];
+   print("[ m1 , m2 ] = [ ");
+      measureSpeed(motor_speed);
+      xil_printf("%2.2f , %2.2f ]\n\r", motor_speed[0], motor_speed[1]);
+}
+
+// Takes an int array to store the speeds of motors 1 and 2, respectively, in
+// revolutions per second
+void measureSpeed(double motor_speed[]) {
+   int m1_sensor = Xil_In32(EDGE_COUNTER_0_BASEADDR + SENS_COUNT_OFFSET);
+   int m1_clk = Xil_In32(EDGE_COUNTER_0_BASEADDR + CLK_COUNT_OFFSET);
+
+   int m2_sensor = Xil_In32(EDGE_COUNTER_1_BASEADDR + SENS_COUNT_OFFSET);
+   int m2_clk = Xil_In32(EDGE_COUNTER_1_BASEADDR + CLK_COUNT_OFFSET);
+
+   motor_speed[0] = 0.25 * m1_sensor * CLK_FREQ / m1_clk;
+   motor_speed[1] = 0.25 * m2_sensor * CLK_FREQ / m2_clk;
    clearCounts();
-   while (1) {
-      u32 count = Xil_In32(EDGE_COUNTER_0_BASEADDR + SENS_COUNT_OFFSET);
-      if (count >= 0x00000FFF) {
-         clearCounts();
-      }
-      xil_printf("%3x\r", count);
-   }
 }
 
 void clearCounts() {
    Xil_Out8(EDGE_COUNTER_0_BASEADDR, 0x1);
+   Xil_Out8(EDGE_COUNTER_1_BASEADDR, 0x1);
+
    Xil_Out8(EDGE_COUNTER_0_BASEADDR, 0x0);
+   Xil_Out8(EDGE_COUNTER_1_BASEADDR, 0x0);
 }
 
 
