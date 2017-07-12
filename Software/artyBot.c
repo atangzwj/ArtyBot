@@ -12,6 +12,7 @@
 #include "microblaze_sleep.h"
 #include "artyBot.h"
 
+// Initialize Arty Board inputs and outputs
 void initIO() {
    // Initialize XGpio structs
    xgpio0 = (XGpio*) calloc(1, sizeof(XGpio));
@@ -84,12 +85,13 @@ void displaySpeed() {
 
 // Takes an int array to store the angular speeds of the wheel on motors 1 and
 // 2, respectively, in RPM
+// Clears the counts after taking measurements
 void measureSpeed(int motor_speed[]) {
-   int m1_sens = Xil_In32(EDGE_COUNTER_0_BASEADDR + SENS_COUNT_OFFSET);
-   int m1_clk = Xil_In32(EDGE_COUNTER_0_BASEADDR + CLK_COUNT_OFFSET);
+   int m1[2];
+   int m2[2];
 
-   int m2_sens = Xil_In32(EDGE_COUNTER_1_BASEADDR + SENS_COUNT_OFFSET);
-   int m2_clk = Xil_In32(EDGE_COUNTER_1_BASEADDR + CLK_COUNT_OFFSET);
+   getEdgeCounts(EDGE_COUNTER_0_BASEADDR, m1);
+   getEdgeCounts(EDGE_COUNTER_1_BASEADDR, m2);
 
    // Compute wheel speeds in RPM
    // The full computation is 0.25 * 60 / 48 * sens * CLK_FREQ / clk
@@ -97,11 +99,20 @@ void measureSpeed(int motor_speed[]) {
    // 60 sec/min to convert rev/sec to rev/min,
    // 48 is the gearbox ratio of the motor
    // Constants at beginning of expression have been combined to 0.3125
-   motor_speed[0] = 0.3125 * m1_sens * CLK_FREQ / m1_clk;
-   motor_speed[1] = 0.3125 * m2_sens * CLK_FREQ / m2_clk;
+   motor_speed[0] = 0.3125 * m1[0] * CLK_FREQ / m1[1];
+   motor_speed[1] = 0.3125 * m2[0] * CLK_FREQ / m2[1];
    clearCounts();
 }
 
+// Take the base address of an EdgeCounter module and an int array
+// The number of sensor edges and clock edges are stored in the given array in
+// that order
+void getEdgeCounts(uintptr_t baseaddr, int edges[]) {
+   edges[0] = (int) Xil_In32(baseaddr + SENS_COUNT_OFFSET);
+   edges[1] = (int) Xil_In32(baseaddr + CLK_COUNT_OFFSET);
+}
+
+// Clear the registers storing counts of sensor edges and clock edges
 void clearCounts() {
    Xil_Out8(EDGE_COUNTER_0_BASEADDR, 0x1);
    Xil_Out8(EDGE_COUNTER_1_BASEADDR, 0x1);
