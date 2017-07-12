@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include "xil_io.h"
+#include "microblaze_sleep.h"
 #include "artyBot.h"
 
 void initIO() {
@@ -51,25 +52,53 @@ void motorSwitch() {
    }
 }
 
-//  (milestone 3)
+// Displays the speed of both wheels in RPM on terminal emulator every half
+// second, SW0 will turn on the motors (milestone 3)
 void displaySpeed() {
-   double motor_speed[2];
-   print("[ m1 , m2 ] = [ ");
-      measureSpeed(motor_speed);
-      xil_printf("%2.2f , %2.2f ]\n\r", motor_speed[0], motor_speed[1]);
+   PWM_Set_Period(PWM_BASEADDR, PWM_PER);
+   PWM_Set_Duty(PWM_BASEADDR, PWM_DUTY, PWM_M1);
+   PWM_Set_Duty(PWM_BASEADDR, PWM_DUTY, PWM_M2);
+
+   PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
+
+   MOTOR1_FORWARD; // Set motor directions to forward
+   MOTOR2_FORWARD;
+
+   print("[  m1 ,  m2 ] (RPM)\n\r");
+
+   int motor_speed[2];
+   int sw0 = 0;
+   while (1) {
+      sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
+      if (sw0) {
+         PWM_Enable(PWM_BASEADDR);
+      } else {
+         PWM_Disable(PWM_BASEADDR);
+      }
+      clearCounts();             // Clear counters
+      usleep(500000);            // Wait half second
+      measureSpeed(motor_speed); // Take measurements
+      xil_printf("[ %3d , %3d ]\r", motor_speed[0], motor_speed[1]);
+   }
 }
 
-// Takes an int array to store the speeds of motors 1 and 2, respectively, in
-// revolutions per second
-void measureSpeed(double motor_speed[]) {
-   int m1_sensor = Xil_In32(EDGE_COUNTER_0_BASEADDR + SENS_COUNT_OFFSET);
+// Takes an int array to store the angular speeds of the wheel on motors 1 and
+// 2, respectively, in RPM
+void measureSpeed(int motor_speed[]) {
+   int m1_sens = Xil_In32(EDGE_COUNTER_0_BASEADDR + SENS_COUNT_OFFSET);
    int m1_clk = Xil_In32(EDGE_COUNTER_0_BASEADDR + CLK_COUNT_OFFSET);
 
-   int m2_sensor = Xil_In32(EDGE_COUNTER_1_BASEADDR + SENS_COUNT_OFFSET);
+   int m2_sens = Xil_In32(EDGE_COUNTER_1_BASEADDR + SENS_COUNT_OFFSET);
    int m2_clk = Xil_In32(EDGE_COUNTER_1_BASEADDR + CLK_COUNT_OFFSET);
 
-   motor_speed[0] = 0.25 * m1_sensor * CLK_FREQ / m1_clk;
-   motor_speed[1] = 0.25 * m2_sensor * CLK_FREQ / m2_clk;
+   // Compute wheel speeds in RPM
+   // The full computation is 0.25 * 60 / 48 * sens * CLK_FREQ / clk
+   // 0.25 turn of the magnetic encoder disk per sensor edge,
+   // 60 sec/min to convert rev/sec to rev/min,
+   // 48 is the gearbox ratio of the motor
+   // Constants at beginning of expression have been combined to 0.3125
+   motor_speed[0] = 0.3125 * m1_sens * CLK_FREQ / m1_clk;
+   motor_speed[1] = 0.3125 * m2_sens * CLK_FREQ / m2_clk;
    clearCounts();
 }
 
@@ -80,24 +109,3 @@ void clearCounts() {
    Xil_Out8(EDGE_COUNTER_0_BASEADDR, 0x0);
    Xil_Out8(EDGE_COUNTER_1_BASEADDR, 0x0);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

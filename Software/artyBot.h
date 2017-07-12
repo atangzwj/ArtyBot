@@ -62,7 +62,7 @@ void motorSwitch();
 
 void displaySpeed();
 
-void measureSpeed(double motor_speed[]);
+void measureSpeed(int motor_speed[]);
 
 void getEdgeCounts(uintptr_t baseaddr, u32 *speed_data[]);
 
