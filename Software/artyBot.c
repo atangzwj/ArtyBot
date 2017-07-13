@@ -77,7 +77,7 @@ void displaySpeed() {
          PWM_Disable(PWM_BASEADDR);
       }
       clearCounts();             // Clear counters
-      usleep(500000);            // Sleep half second
+      usleep(100000);            // Sleep half second
       measureSpeed(motor_speed); // Take measurements
       xil_printf("[ %3d , %3d ]\r", motor_speed[0], motor_speed[1]);
    }
