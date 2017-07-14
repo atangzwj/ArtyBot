@@ -55,6 +55,10 @@ void getEdgeCounts(u32 baseaddr, int edges[]) {
    edges[1] = (int) Xil_In32(baseaddr + CLK_COUNT_OFFSET);
 }
 
+int getSensorEdgeCount(u32 baseaddr) {
+   return (int) Xil_In32(baseaddr + SENS_COUNT_OFFSET);
+}
+
 // Clear the registers storing counts of sensor edges and clock edges
 void clearCounts() {
    Xil_Out8(EDGE_COUNTER_0_BASEADDR, 0x1);

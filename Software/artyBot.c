@@ -76,15 +76,44 @@ void driveStraightSpeedControl() {
 
    int motor_speed[2];
    int sw0 = 0;
-   double duty_coeff[2] = {0.4, 0.4};
+   double duty_cycle[2] = {0.4, 0.4};
    while (1) {
-      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_coeff[0] * PWM_PER), PWM_M1);
-      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_coeff[1] * PWM_PER), PWM_M2);
+      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
+      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
 
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
       if (sw0) {
          PWM_Enable(PWM_BASEADDR);
-         getSpeedCorrection(motor_speed, duty_coeff);
+         getSpeedCorrection(motor_speed, duty_cycle);
+      } else {
+         PWM_Disable(PWM_BASEADDR);
+         resetErrors();
+      }
+      clearCounts();
+      usleep(100000);
+      measureSpeed(motor_speed);
+   }
+}
+
+void driveStraightPositionControl() {
+   PWM_Set_Period(PWM_BASEADDR, PWM_PER);
+
+   PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
+
+   MOTOR1_FORWARD;
+   MOTOR2_FORWARD;
+
+   int motor_speed[2];
+   int sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
+   double duty_cycle[2] = {0.4, 0.4};
+   while (1) {
+      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
+      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
+
+      sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
+      if (sw0) {
+         PWM_Enable(PWM_BASEADDR);
+//         getPositionCorrection(duty_coeff);
       } else {
          PWM_Disable(PWM_BASEADDR);
          resetErrors();
