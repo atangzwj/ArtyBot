@@ -13,9 +13,9 @@
 
 int main() {
    initIO();
+
    print("Running PID controller program\n\r");
    PWM_Set_Period(PWM_BASEADDR, PWM_PER);
-
 
    PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
 
