@@ -5,7 +5,6 @@
  *      Author: Arvin Tang
  */
 
-#include "artyBot.h"
 #include "pidController.h"
 
 #define SP     100
