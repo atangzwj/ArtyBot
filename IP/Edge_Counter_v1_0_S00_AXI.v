@@ -1,7 +1,7 @@
 
 `timescale 1 ns / 1 ps
 
-   module Edge_Counter_v1_0_S00_AXI #
+module Edge_Counter_v1_0_S00_AXI #
    (
       // Users to add parameters here
 
@@ -407,7 +407,7 @@
    );
    // User logic ends
 
-   endmodule
+endmodule
 
 module edgeCounter (clk, count_sig, count_clk, sig, clear);
    input             clk;
