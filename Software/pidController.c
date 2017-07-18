@@ -23,7 +23,7 @@ int err_sum_pos  = 0;
 int err_prev_pos = 0;
 
 // Takes an int array containing current speeds for motor1, motor2, respectively
-// Takes a double array to store new duty cycle for motor1, motor2, respectively)
+// Takes a double array to store new duty cycle for motor1, motor2, respectively
 // Assumes that this function gets called at regular time intervals
 void getSpeedCorrection(int speed[], double duty_cycle[]) {
    int error_m1 = SP_SPEED - speed[0];
@@ -32,12 +32,12 @@ void getSpeedCorrection(int speed[], double duty_cycle[]) {
    err_sum_speed[0] += error_m1;
    err_sum_speed[1] += error_m2;
 
-   duty_cycle[0] = K_PROP_SPEED * error_m1
-                      + K_INTG_SPEED * err_sum_speed[0]
-                      + K_DIFF_SPEED * (error_m1 - err_prev_speed[0]);
-   duty_cycle[1] = K_PROP_SPEED * error_m2
-                      + K_INTG_SPEED * err_sum_speed[1]
-                      + K_DIFF_SPEED * (error_m2 - err_prev_speed[1]);
+   duty_cycle[0] =   K_PROP_SPEED *  error_m1
+                   + K_INTG_SPEED *  err_sum_speed[0]
+                   + K_DIFF_SPEED * (error_m1 - err_prev_speed[0]);
+   duty_cycle[1] =   K_PROP_SPEED *  error_m2
+                   + K_INTG_SPEED *  err_sum_speed[1]
+                   + K_DIFF_SPEED * (error_m2 - err_prev_speed[1]);
 
    err_prev_speed[0] = error_m1;
    err_prev_speed[1] = error_m2;
