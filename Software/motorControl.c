@@ -33,8 +33,7 @@ void measureSpeed(int motor_speed[]) {
    int m1[2];
    int m2[2];
 
-   getEdgeCounts(EDGE_COUNTER_0_BASEADDR, m1);
-   getEdgeCounts(EDGE_COUNTER_1_BASEADDR, m2);
+   getEdgeCounts(MSP_BASEADDR, m1, m2);
 
    // Compute wheel speeds in RPM
    // The full computation is 0.25 * 60 / 48 * sens * CLK_FREQ / clk
@@ -50,20 +49,16 @@ void measureSpeed(int motor_speed[]) {
 // Take the base address of an EdgeCounter module and an int array
 // The number of sensor edges and clock edges are stored in the given array in
 // that order
-void getEdgeCounts(u32 baseaddr, int edges[]) {
-   edges[0] = (int) Xil_In32(baseaddr + SENS_COUNT_OFFSET);
-   edges[1] = (int) Xil_In32(baseaddr + CLK_COUNT_OFFSET);
-}
+void getEdgeCounts(u32 baseaddr, int m1[], int m2[]) {
+   m1[0] = (int) Xil_In32(baseaddr + M1_POS1_OFFSET);
+   m1[1] = (int) Xil_In32(baseaddr + MSP_CLK_OFFSET);
 
-int getSensorEdgeCount(u32 baseaddr) {
-   return (int) Xil_In32(baseaddr + SENS_COUNT_OFFSET);
+   m2[0] = (int) Xil_In32(baseaddr + M2_POS1_OFFSET);
+   m2[1] = (int) Xil_In32(baseaddr + MSP_CLK_OFFSET);
 }
 
 // Clear the registers storing counts of sensor edges and clock edges
 void clearCounts() {
-   Xil_Out8(EDGE_COUNTER_0_BASEADDR, 0x1);
-   Xil_Out8(EDGE_COUNTER_1_BASEADDR, 0x1);
-
-   Xil_Out8(EDGE_COUNTER_0_BASEADDR, 0x0);
-   Xil_Out8(EDGE_COUNTER_1_BASEADDR, 0x0);
+   Xil_Out8(MSP_BASEADDR + CLEAR_COUNT_OFFSET, 0x1);
+   Xil_Out8(MSP_BASEADDR + CLEAR_COUNT_OFFSET, 0x0);
 }

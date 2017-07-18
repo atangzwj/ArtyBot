@@ -7,12 +7,17 @@
  *  Main program for the ArtyBot.
  */
 
+#include "platform.h"
 #include "motorControl.h"
 #include "artyBot.h"
+#include "microblaze_sleep.h"
 
 int main() {
-   initIO();
-   driveStraightSpeedControl();
+	init_platform();
 
+   initIO();
+   displaySpeed();
+
+   cleanup_platform();
    return 0;
 }

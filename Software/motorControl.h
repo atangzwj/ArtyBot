@@ -35,10 +35,19 @@
 
 #define EDGE_COUNTER_0_BASEADDR XPAR_EDGE_COUNTER_0_S00_AXI_BASEADDR
 #define EDGE_COUNTER_1_BASEADDR XPAR_EDGE_COUNTER_1_S00_AXI_BASEADDR
-#define SENS_COUNT_OFFSET 0x04
-#define CLK_COUNT_OFFSET  0x08
+#define CLEAR_COUNT_OFFSET      0x00
+#define SENS_COUNT_OFFSET       0x04
+#define CLK_COUNT_OFFSET        0x08
 
-#define CLK_FREQ 83333333
+#define MSP_BASEADDR   XPAR_MOTORSPEEDPOSITION_0_S00_AXI_BASEADDR
+#define CLEAR_OFFSET   0x00
+#define M1_POS1_OFFSET 0x04
+#define M1_POS2_OFFSET 0x08
+#define M2_POS1_OFFSET 0x0C
+#define M2_POS2_OFFSET 0x10
+#define MSP_CLK_OFFSET 0x14
+
+#define CLK_FREQ XPAR_CPU_M_AXI_DP_FREQ_HZ
 
 
 /************ Global Variables ************/
@@ -56,7 +65,7 @@ void initIO();
 
 void measureSpeed(int motor_speed[]);
 
-void getEdgeCounts(u32 baseaddr, int edges[]);
+void getEdgeCounts(u32 baseaddr, int m1[], int m2[]);
 
 void clearCounts();
 
