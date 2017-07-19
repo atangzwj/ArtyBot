@@ -41,10 +41,10 @@
 
 #define MSP_BASEADDR   XPAR_MOTORSPEEDPOSITION_0_S00_AXI_BASEADDR
 #define CLEAR_OFFSET   0x00
-#define M1_POS1_OFFSET 0x04
-#define M1_POS2_OFFSET 0x08
-#define M2_POS1_OFFSET 0x0C
-#define M2_POS2_OFFSET 0x10
+#define M1_POS1_OFFSET 0x04 // Sample for speed
+#define M1_POS2_OFFSET 0x08 // Accumulated distance
+#define M2_POS1_OFFSET 0x0C // Sample for speed
+#define M2_POS2_OFFSET 0x10 // Accumulated distance
 #define MSP_CLK_OFFSET 0x14
 
 #define CLK_FREQ XPAR_CPU_M_AXI_DP_FREQ_HZ
@@ -65,8 +65,10 @@ void initIO();
 
 void measureSpeed(int motor_speed[]);
 
-void getEdgeCounts(u32 baseaddr, int m1[], int m2[]);
+void getEdgeCounts(int m1[], int m2[]);
 
 void clearCounts();
+
+void getPosition(int motor_pos[]);
 
 #endif /* SRC_MOTORCONTROL_H_ */
