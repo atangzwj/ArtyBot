@@ -16,12 +16,6 @@
 #include "PWM.h"
 
 
-/************ Macro Definitions ************/
-
-
-/************ Global Variables ************/
-
-
 /************ Function Prototypes ************/
 
 void motorSwitch();
@@ -29,5 +23,9 @@ void motorSwitch();
 void displaySpeed();
 
 void driveStraightSpeedControl();
+
+void driveStraightPosControl();
+
+void driveStraightSpeedPosControl();
 
 #endif /* SRC_ARTYBOT_H_ */

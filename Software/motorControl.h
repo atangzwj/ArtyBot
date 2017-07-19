@@ -33,11 +33,11 @@
 #define MOTOR2_FORWARD  XGpio_DiscreteWrite(xgpio0, M2_CHANNEL, 0x1)
 #define MOTOR2_BACKWARD XGpio_DiscreteWrite(xgpio0, M2_CHANNEL, 0x0)
 
-#define EDGE_COUNTER_0_BASEADDR XPAR_EDGE_COUNTER_0_S00_AXI_BASEADDR
+/*#define EDGE_COUNTER_0_BASEADDR XPAR_EDGE_COUNTER_0_S00_AXI_BASEADDR
 #define EDGE_COUNTER_1_BASEADDR XPAR_EDGE_COUNTER_1_S00_AXI_BASEADDR
 #define CLEAR_COUNT_OFFSET      0x00
 #define SENS_COUNT_OFFSET       0x04
-#define CLK_COUNT_OFFSET        0x08
+#define CLK_COUNT_OFFSET        0x08*/
 
 #define MSP_BASEADDR   XPAR_MOTORSPEEDPOSITION_0_S00_AXI_BASEADDR
 #define CLEAR_OFFSET   0x00
@@ -67,8 +67,10 @@ void measureSpeed(int motor_speed[]);
 
 void getEdgeCounts(int m1[], int m2[]);
 
-void clearCounts();
+void clearSpeedCounters();
 
-void getPosition(int motor_pos[]);
+int getPositionDifference();
+
+void clearPosCounter();
 
 #endif /* SRC_MOTORCONTROL_H_ */

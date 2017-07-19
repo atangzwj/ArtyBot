@@ -10,6 +10,10 @@
 
 void getSpeedCorrection(int speed[], double duty[]);
 
+void getPosCorrection(int pos_diff, double duty_cycle[]);
+
+void getSpeedPosCorrection(int speed[], int pos_diff, double duty_cycle[]);
+
 void resetErrors();
 
 #endif /* SRC_PIDCONTROLLER_H_ */

@@ -58,7 +58,7 @@ void displaySpeed() {
       } else {
          PWM_Disable(PWM_BASEADDR);
       }
-      clearCounts();             // Clear counters
+      clearSpeedCounters();      // Clear counters
       usleep(500000);            // Sleep half second
       measureSpeed(motor_speed); // Take measurements
       xil_printf("[ %3d , %3d ]\r", motor_speed[0], motor_speed[1]);
@@ -71,10 +71,12 @@ void driveStraightSpeedControl() {
 
    PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
 
-   MOTOR1_FORWARD;
+   MOTOR1_FORWARD;  // Set motor directions to forward
    MOTOR2_FORWARD;
+
    print("[  m1 ,  m2 ] (RPM)\n\r");
    int motor_speed[2];
+   measureSpeed(motor_speed);
    int sw0 = 0;
    double duty_cycle[2] = {0.4, 0.4};
    while (1) {
@@ -89,23 +91,24 @@ void driveStraightSpeedControl() {
          PWM_Disable(PWM_BASEADDR);
          resetErrors();
       }
-      clearCounts();
+      clearSpeedCounters();
       usleep(100000);
       measureSpeed(motor_speed);
       xil_printf("[ %3d , %3d ]\r", motor_speed[0], motor_speed[1]);
    }
 }
 
-void driveStraightPositionControl() {
+void driveStraightPosControl() {
    PWM_Set_Period(PWM_BASEADDR, PWM_PER);
 
    PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
 
-   MOTOR1_FORWARD;
+   MOTOR1_FORWARD; // Set motor directions to forward
    MOTOR2_FORWARD;
 
-   int motor_speed[2];
-   int sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
+   int pos_diff = getPositionDifference();
+
+   int sw0 = 0;
    double duty_cycle[2] = {0.4, 0.4};
    while (1) {
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
@@ -114,13 +117,50 @@ void driveStraightPositionControl() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
       if (sw0) {
          PWM_Enable(PWM_BASEADDR);
-//         getPositionCorrection(duty_coeff);
+         getPosCorrection(pos_diff, duty_cycle);
       } else {
          PWM_Disable(PWM_BASEADDR);
          resetErrors();
       }
-      clearCounts();
+      usleep(100000);
+      pos_diff = getPositionDifference();
+      xil_printf("%3d\r", pos_diff);
+   }
+}
+
+void driveStraightSpeedPosControl() {
+   PWM_Set_Period(PWM_BASEADDR, PWM_PER);
+
+   PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
+
+   MOTOR1_FORWARD;
+   MOTOR2_FORWARD;
+
+   int motor_speed[2];
+   measureSpeed(motor_speed);
+
+   int pos_diff = getPositionDifference();
+
+   int sw0 = 0;
+   double duty_cycle[2] = {0.4, 0.4};
+   while (1) {
+      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
+      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
+
+      sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
+      if (sw0) {
+         PWM_Enable(PWM_BASEADDR);
+         getSpeedPosCorrection(motor_speed, pos_diff, duty_cycle);
+         //xil_printf("%3d   %3d\r", motor_speed[0], motor_speed[1]);
+         //xil_printf("%3d   %3d\r", (int) (100 * duty_cycle[0]), (int) (100 * duty_cycle[1]));
+         //xil_printf("pos_diff = %5d\r", pos_diff);
+      } else {
+         PWM_Disable(PWM_BASEADDR);
+         resetErrors();
+      }
+      clearSpeedCounters();
       usleep(100000);
       measureSpeed(motor_speed);
+      pos_diff = getPositionDifference();
    }
 }

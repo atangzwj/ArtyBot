@@ -12,12 +12,12 @@
 #define K_INTG_SPEED 0.0005
 #define K_DIFF_SPEED 0
 
-#define K_PROP_POS 0
-#define K_INTG_POS 0
+#define K_PROP_POS 0.00008
+#define K_INTG_POS 0.00003
 #define K_DIFF_POS 0
 
-#define K_PROP_SPEEDPOS 0
-#define K_INTG_SPEEDPOS 0
+#define K_PROP_SPEEDPOS 0.0005
+#define K_INTG_SPEEDPOS 0.0002
 #define K_DIFF_SPEEDPOS 0
 
 int err_sum_speed[2]  = {0, 0};
@@ -45,6 +45,24 @@ void getSpeedCorrection(int speed[], double duty_cycle[]) {
 
    err_prev_speed[0] = error_m1; // Current error becomes previous error for
    err_prev_speed[1] = error_m2; // next sample
+}
+
+void getPosCorrection(int pos_diff, double duty_cycle[]) {
+   double pwm_min = 0.25;
+   double pwm_max = 0.5;
+
+   err_sum_pos += pos_diff;
+
+   duty_cycle[0] = duty_cycle[0] - K_PROP_POS * pos_diff
+                                 - K_INTG_POS * err_sum_pos;
+   duty_cycle[1] = duty_cycle[1] + K_PROP_POS * pos_diff
+                                 + K_INTG_POS * err_sum_pos;
+   if (duty_cycle[0] < pwm_min || duty_cycle[0] > pwm_max) {
+      duty_cycle[0] = pwm_min;
+   }
+   if (duty_cycle[1] < pwm_min || duty_cycle[1] > pwm_max) {
+      duty_cycle[1] = pwm_min;
+   }
 }
 
 // Take int array containing current speeds of motors, int containing difference
@@ -91,4 +109,7 @@ void resetErrors() {
 
    err_prev_speed[0] = 0;
    err_prev_speed[1] = 0;
+
+   err_sum_pos  = 0;
+   err_prev_pos = 0;
 }
