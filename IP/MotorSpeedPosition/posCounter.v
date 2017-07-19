@@ -33,20 +33,20 @@ module posCounter (
    reg sensor_prev;
    
    initial begin
-      pos1        = 32'b0;
-      pos2        = 32'b0;
+      pos1        = 16'b0;
+      pos2        = 16'b0;
       sensor_prev =  1'b0;
    end
    
    always @ (posedge clk) begin
       if (clear[1] | clear[0]) begin
-         if (clear[0]) pos1 <= 32'b0;
-         if (clear[1]) pos2 <= 32'b0;
+         if (clear[0]) pos1 <= 16'b0;
+         if (clear[1]) pos2 <= 16'b0;
       end else if (subtract) begin
-         pos2        <= pos2 - distance;
+         pos2 <= pos2 - distance;
       end else if (~sensor_prev & sensor) begin
-         pos1        <= pos1 + 1'b1;
-         pos2        <= pos2 + 1'b1;
+         pos1 <= pos1 + 1'b1;
+         pos2 <= pos2 + 1'b1;
       end
       
       sensor_prev <= sensor;

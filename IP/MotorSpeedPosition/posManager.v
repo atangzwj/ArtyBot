@@ -35,8 +35,8 @@ module posManager (
    end
 
    always @ (posedge clk) begin
-      if (clear) count_clk <= 32'b0;
-      else       count_clk <= count_clk + 1'b1;
+      if (clear[0]) count_clk <= 32'b0;
+      else          count_clk <= count_clk + 1'b1;
    end
 
    wire subtract;
@@ -115,6 +115,8 @@ module posManager_testbench ();
          m1 <= 0; m2 <= 0;                 @(posedge clk);
          m1 <= 1; m2 <= 1;                 @(posedge clk);
       end
+                           clear <= 2'b10; @(posedge clk);
+                           clear <= 2'b00; @(posedge clk);
                                            @(posedge clk);
                                            @(posedge clk);
                                            @(posedge clk);
