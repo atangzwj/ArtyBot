@@ -73,7 +73,7 @@ void driveStraightSpeedControl() {
 
    MOTOR1_FORWARD;
    MOTOR2_FORWARD;
-
+   print("[  m1 ,  m2 ] (RPM)\n\r");
    int motor_speed[2];
    int sw0 = 0;
    double duty_cycle[2] = {0.4, 0.4};
@@ -92,6 +92,7 @@ void driveStraightSpeedControl() {
       clearCounts();
       usleep(100000);
       measureSpeed(motor_speed);
+      xil_printf("[ %3d , %3d ]\r", motor_speed[0], motor_speed[1]);
    }
 }
 

@@ -16,7 +16,7 @@ int main() {
 	init_platform();
 
    initIO();
-   displaySpeed();
+   driveStraightSpeedControl();
 
    cleanup_platform();
    return 0;

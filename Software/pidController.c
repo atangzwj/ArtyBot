@@ -16,6 +16,10 @@
 #define K_INTG_POS 0
 #define K_DIFF_POS 0
 
+#define K_PROP_SPEEDPOS 0
+#define K_INTG_SPEEDPOS 0
+#define K_DIFF_SPEEDPOS 0
+
 int err_sum_speed[2]  = {0, 0};
 int err_prev_speed[2] = {0, 0};
 
@@ -46,12 +50,26 @@ void getSpeedCorrection(int speed[], double duty_cycle[]) {
 // Takes an int that is difference between motor1 and motor2 position and double
 // array to store new duty cycle for motor1, motor2, respectively
 // Client must maintain positional difference between the two motors
-void getPositionCorrection(int pos_diff, double duty_cycle[]) {
-   err_sum_pos += pos_diff;
+void getSpeedPosCorrection(int speed[], int pos_diff, double duty_cycle[]) {
+	int spd_error_m1 = SP_SPEED - speed[0];
+	int spd_error_m2 = SP_SPEED - speed[1];
 
-//   duty_cycle[0] = K_PROP_POS * pos_diff
-//                      + K_INTG_POS * err_sum_pos
-//                      + K_DIFF_POS * (pos_diff - err_prev_pos);
+	double pos_diff_half = 0.5 * pos_diff;
+
+	err_sum_speed[0] += spd_error_m1;
+	err_sum_speed[1] += spd_error_m2;
+
+	duty_cycle[0] =   K_PROP_SPEEDPOS *  spd_error_m1
+						 + K_INTG_SPEEDPOS *  err_sum_speed[0]
+					    + K_DIFF_SPEEDPOS * (spd_error_m1 - err_prev_speed[0])
+						 - pos_diff_half;
+	duty_cycle[1] =   K_PROP_SPEEDPOS *  spd_error_m2
+						 + K_INTG_SPEEDPOS *  err_sum_speed[1]
+					    + K_DIFF_SPEEDPOS * (spd_error_m2 - err_prev_speed[1])
+						 + pos_diff_half;
+
+	err_prev_speed[0] = spd_error_m1;
+	err_prev_speed[1] = spd_error_m2;
 }
 
 // Reset accumulated error and previous error to 0
