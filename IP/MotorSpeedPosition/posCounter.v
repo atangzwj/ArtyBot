@@ -22,12 +22,12 @@
 
 module posCounter (
    input  wire        clk,
-   output reg  [31:0] pos1,
-   output reg  [31:0] pos2,
-   input  wire        sensor,
-   input  wire        clear,
-   input  wire        subtract,
-   input  wire [31:0] distance
+   output reg  [15:0] pos1,     // Use for speed calculation
+   output reg  [15:0] pos2,     // Use for position control
+   input  wire        sensor,   // Sensor input signal
+   input  wire [1:0]  clear,    // clear[0] for pos1, clear[1] for pos2
+   input  wire        subtract, // subtract distance from pos2
+   input  wire [15:0] distance  // Ammount to reduce pos2 when subtract is true
 );
    
    reg sensor_prev;
@@ -39,30 +39,28 @@ module posCounter (
    end
    
    always @ (posedge clk) begin
-      if (clear) begin
-         pos1        <= 32'b0;
-         sensor_prev <= sensor;
+      if (clear[1] | clear[0]) begin
+         if (clear[0]) pos1 <= 32'b0;
+         if (clear[1]) pos2 <= 32'b0;
       end else if (subtract) begin
          pos2        <= pos2 - distance;
-         sensor_prev <= sensor;
       end else if (~sensor_prev & sensor) begin
          pos1        <= pos1 + 1'b1;
          pos2        <= pos2 + 1'b1;
-         sensor_prev <= sensor;
-      end else begin
-         sensor_prev <= sensor;
       end
+      
+      sensor_prev <= sensor;
    end
 endmodule
 
 module posCounter_testbench ();
    reg         clk;
-   wire [31:0] pos1;
-   wire [31:0] pos2;
+   wire [15:0] pos1;
+   wire [15:0] pos2;
    reg         sensor;
-   reg         clear;
+   reg  [1:0]  clear;
    reg         subtract;
-   wire [31:0] distance;
+   wire [15:0] distance;
 
    posCounter dut (
       .clk(clk),
@@ -80,31 +78,32 @@ module posCounter_testbench ();
       forever #(CLOCK_PERIOD / 2) clk <= ~clk;
    end
 
-   assign distance = 32'b11;
+   assign distance = 16'b111;
 
+   integer i;
    initial begin
-      sensor <= 0; clear <= 0; subtract <= 0; @(posedge clk);
-                   clear <= 1;                @(posedge clk);
-      sensor <= 1; clear <= 0;                @(posedge clk);
-      sensor <= 0;                            @(posedge clk);
-      sensor <= 1;                            @(posedge clk);
-      sensor <= 0;                            @(posedge clk);
-      sensor <= 1;                            @(posedge clk);
-      sensor <= 0;                            @(posedge clk);
-      sensor <= 1;                            @(posedge clk);
-      sensor <= 0;                            @(posedge clk);
-      sensor <= 1;                            @(posedge clk);
-      sensor <= 0;                            @(posedge clk);
-      sensor <= 1;                            @(posedge clk);
-      sensor <= 0;                            @(posedge clk);
-      sensor <= 1;                            @(posedge clk);
-      sensor <= 0;                            @(posedge clk);
-                               subtract <= 1; @(posedge clk);
-                               subtract <= 0; @(posedge clk);
-      sensor <= 1;                            @(posedge clk);
-      sensor <= 0;                            @(posedge clk);
-      sensor <= 1;                            @(posedge clk);
-      sensor <= 0;                            @(posedge clk);
+         sensor <= 0; clear <= 2'b00; subtract <= 0; @(posedge clk);
+                      clear <= 2'b01;                @(posedge clk);
+         sensor <= 1; clear <= 2'b00;                @(posedge clk);
+         sensor <= 0;                                @(posedge clk);
+      for (i = 0; i < 10; i = i + 1) begin
+         sensor <= 1;                                @(posedge clk);
+         sensor <= 0;                                @(posedge clk);
+      end
+                                      subtract <= 1; @(posedge clk);
+                                      subtract <= 0; @(posedge clk);
+      for (i = 0; i < 6; i = i + 1) begin
+         sensor <= 1;                                @(posedge clk);
+         sensor <= 0;                                @(posedge clk);
+      end
+                      clear <= 2'b10;                @(posedge clk);
+                      clear <= 2'b00;                @(posedge clk);
+      for (i = 0; i < 6; i = i + 1) begin
+         sensor <= 1;                                @(posedge clk);
+         sensor <= 0;                                @(posedge clk);
+      end
+                      clear <= 2'b11;                @(posedge clk);
+                      clear <= 2'b00;                @(posedge clk);
       $stop;
    end
 endmodule

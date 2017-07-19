@@ -1,7 +1,5 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
 // 
 // Create Date: 07/17/2017 04:24:19 PM
 // Design Name: 
@@ -20,18 +18,16 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module posManager # (
-   parameter integer ROLLOVER = 15
-) ( 
+module posManager ( 
    input  wire        clk,
-   output wire [31:0] pos11,
-   output wire [31:0] pos12,
-   output wire [31:0] pos21,
-   output wire [31:0] pos22,
+   output wire [15:0] pos11,
+   output wire [15:0] pos12,
+   output wire [15:0] pos21,
+   output wire [15:0] pos22,
    output reg  [31:0] count_clk,
    input  wire        m1,
    input  wire        m2,
-   input  wire        clear
+   input  wire [1:0]  clear
 );
 
    initial begin
@@ -44,9 +40,9 @@ module posManager # (
    end
 
    wire subtract;
-   assign subtract = pos12[ROLLOVER] | pos22[ROLLOVER];
+   assign subtract = pos12[15] | pos22[15];
 
-   reg [31:0] distance;
+   reg [15:0] distance;
    always @ (*) begin
       if (pos12 < pos22) distance = pos12;
       else               distance = pos22;
@@ -75,12 +71,12 @@ endmodule
 
 module posManager_testbench ();
    reg         clk;
-   wire [31:0] pos11, pos12, pos21, pos22, count_clk;
-   reg         m1, m2, clear;
+   wire [15:0] pos11, pos12, pos21, pos22;
+   wire [31:0] count_clk;
+   reg         m1, m2;
+   reg  [1:0]  clear;
 
-   posManager # (
-      .ROLLOVER(3)
-   ) dut (
+   posManager dut (
       .clk(clk),
       .pos11(pos11),
       .pos12(pos12),
@@ -100,25 +96,34 @@ module posManager_testbench ();
 
    integer i;
    initial begin
-      m1 <= 0; m2 <= 0; clear <= 0; @(posedge clk);
-                        clear <= 1; @(posedge clk);
-                        clear <= 0; @(posedge clk);
-      m1 <= 1; m2 <= 1;             @(posedge clk);
-      m1 <= 0; m2 <= 0;             @(posedge clk);
-      m1 <= 1; m2 <= 1;             @(posedge clk);
-      m1 <= 0; m2 <= 0;             @(posedge clk);
-      m1 <= 1; m2 <= 1;             @(posedge clk);
-      m1 <= 0; m2 <= 0;             @(posedge clk);
+         m1 <= 0; m2 <= 0; clear <= 2'b00; @(posedge clk);
+                           clear <= 2'b01; @(posedge clk);
+                           clear <= 2'b00; @(posedge clk);
+         m1 <= 1;                          @(posedge clk);
+         m1 <= 0;                          @(posedge clk);
+         m1 <= 1;                          @(posedge clk);
+         m1 <= 0;                          @(posedge clk);
+         m1 <= 1;                          @(posedge clk);
+         m1 <= 0;                          @(posedge clk);
       for (i = 0; i < 16; i = i + 1) begin
-         m1 <= 0; m2 <= 0; @(posedge clk);
-         m1 <= 1; m2 <= 1; @(posedge clk);
+         m1 <= 0; m2 <= 0;                 @(posedge clk);
+         m1 <= 1; m2 <= 1;                 @(posedge clk);
       end
-                        clear <= 1; @(posedge clk);
-                        clear <= 0; @(posedge clk);
+                           clear <= 2'b01; @(posedge clk);
+                           clear <= 2'b00; @(posedge clk);
+      for (i = 0; i < 32768; i = i + 1) begin
+         m1 <= 0; m2 <= 0;                 @(posedge clk);
+         m1 <= 1; m2 <= 1;                 @(posedge clk);
+      end
+                                           @(posedge clk);
+                                           @(posedge clk);
+                                           @(posedge clk);
       for (i = 0; i < 16; i = i + 1) begin
-         m1 <= 0; m2 <= 0; @(posedge clk);
-         m1 <= 1; m2 <= 1; @(posedge clk);
+         m1 <= 0; m2 <= 0;                 @(posedge clk);
+         m1 <= 1; m2 <= 1;                 @(posedge clk);
       end
+                           clear <= 2'b11; @(posedge clk);
+                           clear <= 2'b00; @(posedge clk);
       $stop;
    end
 endmodule

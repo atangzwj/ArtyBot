@@ -413,14 +413,15 @@ module MotorSpeedPosition_v1_0_S00_AXI #
    end
 
    // Add user logic here
-   wire clear;
-   assign clear = slv_reg0[0];
+   wire [1:0] clear;
+   assign clear = slv_reg0[1:0];
    
-   wire [31:0] m1_pos1, m1_pos2, m2_pos1, m2_pos2, count_clk;
-   assign slv_reg1 = m1_pos1;
-   assign slv_reg2 = m1_pos2;
-   assign slv_reg3 = m2_pos1;
-   assign slv_reg4 = m2_pos2;
+   wire [15:0] m1_pos1, m1_pos2, m2_pos1, m2_pos2;
+   wire [31:0] count_clk;
+   assign slv_reg1 = {16'b0, m1_pos1};
+   assign slv_reg2 = {16'b0, m1_pos2};
+   assign slv_reg3 = {16'b0, m2_pos1};
+   assign slv_reg4 = {16'b0, m2_pos2};
    assign slv_reg5 = count_clk;
    
    posManager pos_manager (
