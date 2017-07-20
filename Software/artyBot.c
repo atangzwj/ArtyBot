@@ -74,7 +74,6 @@ void driveStraightSpeedControl() {
    MOTOR1_FORWARD;  // Set motor directions to forward
    MOTOR2_FORWARD;
 
-   print("[  m1 ,  m2 ] (RPM)\n\r");
    int motor_speed[2];
    measureSpeed(motor_speed);
    int sw0 = 0;
@@ -92,10 +91,8 @@ void driveStraightSpeedControl() {
          resetErrors();
       }
       clearSpeedCounters();
-      usleep(100000);
+      usleep(50000);
       measureSpeed(motor_speed);
-
-//      xil_printf("[ %3d , %3d ]\r", motor_speed[0], motor_speed[1]);
    }
 }
 
@@ -124,7 +121,7 @@ void driveStraightPosControl() {
          clearPosCounter();
          resetErrors();
       }
-      usleep(100000);
+      usleep(50000);
       pos_diff = getPositionDifference();
    }
 }
@@ -153,16 +150,12 @@ void driveStraightSpeedPosControl() {
          PWM_Enable(PWM_BASEADDR);
          getSpeedCorrection(motor_speed, duty_cycle);
          getPosCorrection(pos_diff, duty_cycle);
-         //xil_printf("%3d   %3d\r", motor_speed[0], motor_speed[1]);
-//         xil_printf("%3d   %3d\r", (int) (100 * duty_cycle[0]), (int) (100 * duty_cycle[1]));
-         //xil_printf("pos_diff = %5d\r", pos_diff);
       } else {
          PWM_Disable(PWM_BASEADDR);
          clearPosCounter();
          resetErrors();
       }
       clearSpeedCounters();
-//      usleep(100000);
       usleep(50000);
       measureSpeed(motor_speed);
       pos_diff = getPositionDifference();
