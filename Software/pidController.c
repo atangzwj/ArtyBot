@@ -12,8 +12,8 @@
 #define K_INTG_SPEED 0.0005
 #define K_DIFF_SPEED 0
 
-#define K_PROP_POS 0.00004
-#define K_INTG_POS 0.000015
+#define K_PROP_POS 0.00007
+#define K_INTG_POS 0.00002
 #define K_DIFF_POS 0
 
 #define K_PROP_SPEEDPOS 0.0005
