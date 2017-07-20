@@ -162,7 +162,8 @@ void driveStraightSpeedPosControl() {
          resetErrors();
       }
       clearSpeedCounters();
-      usleep(100000);
+//      usleep(100000);
+      usleep(50000);
       measureSpeed(motor_speed);
       pos_diff = getPositionDifference();
    }
