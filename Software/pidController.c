@@ -43,13 +43,20 @@ void getSpeedCorrection(int speed[], double duty_cycle[]) {
                    + K_INTG_SPEED *  err_sum_speed[1]
                    + K_DIFF_SPEED * (error_m2 - err_prev_speed[1]);
 
+   if (duty_cycle[0] < 0) {
+      duty_cycle[0] = 0;
+   }
+   if (duty_cycle[1] < 0) {
+      duty_cycle[1] = 0;
+   }
+
    err_prev_speed[0] = error_m1; // Current error becomes previous error for
    err_prev_speed[1] = error_m2; // next sample
 }
 
 void getPosCorrection(int pos_diff, double duty_cycle[]) {
-   double pwm_min = 0.25;
-   double pwm_max = 0.5;
+   double pwm_min = 0.38;
+   double pwm_max = 0.6;
 
    err_sum_pos += pos_diff;
 
@@ -57,10 +64,12 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
                                  - K_INTG_POS * err_sum_pos;
    duty_cycle[1] = duty_cycle[1] + K_PROP_POS * pos_diff
                                  + K_INTG_POS * err_sum_pos;
-   if (duty_cycle[0] < pwm_min || duty_cycle[0] > pwm_max) {
+
+   if (duty_cycle[0] < 0 || duty_cycle[0] > pwm_max) {
       duty_cycle[0] = pwm_min;
    }
-   if (duty_cycle[1] < pwm_min || duty_cycle[1] > pwm_max) {
+
+   if (duty_cycle[1] < 0 || duty_cycle[1] > pwm_max) {
       duty_cycle[1] = pwm_min;
    }
 }

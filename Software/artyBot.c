@@ -94,7 +94,8 @@ void driveStraightSpeedControl() {
       clearSpeedCounters();
       usleep(100000);
       measureSpeed(motor_speed);
-      xil_printf("[ %3d , %3d ]\r", motor_speed[0], motor_speed[1]);
+
+//      xil_printf("[ %3d , %3d ]\r", motor_speed[0], motor_speed[1]);
    }
 }
 
@@ -124,7 +125,10 @@ void driveStraightPosControl() {
       }
       usleep(100000);
       pos_diff = getPositionDifference();
-      xil_printf("%3d\r", pos_diff);
+      int d1 = (int) (100 * duty_cycle[0]);
+      int d2 = (int) (100 * duty_cycle[1]);
+      xil_printf("%3d   %3d\r", d1, d2);
+//      xil_printf("%3d\r", pos_diff);
    }
 }
 
