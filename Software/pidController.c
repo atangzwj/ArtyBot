@@ -44,10 +44,15 @@ void getSpeedCorrection(int speed[], double duty_cycle[]) {
                    + K_DIFF_SPEED * (error_m2 - err_prev_speed[1]);
 
    if (duty_cycle[0] < 0) {
-      duty_cycle[0] = 0;
+      duty_cycle[0] = 0.0;
+   } else if (duty_cycle[0] > 1) {
+      duty_cycle[0] = 1.0;
    }
+
    if (duty_cycle[1] < 0) {
-      duty_cycle[1] = 0;
+      duty_cycle[1] = 0.0;
+   } else if (duty_cycle[1] > 1) {
+      duty_cycle[1] = 1.0;
    }
 
    err_prev_speed[0] = error_m1; // Current error becomes previous error for
@@ -55,9 +60,6 @@ void getSpeedCorrection(int speed[], double duty_cycle[]) {
 }
 
 void getPosCorrection(int pos_diff, double duty_cycle[]) {
-//   double pwm_min = 0.6;
-//   double pwm_max = 0.75;
-
    err_sum_pos += pos_diff;
 
    duty_cycle[0] = duty_cycle[0] - K_PROP_POS * pos_diff
@@ -66,23 +68,16 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
                                  + K_INTG_POS * err_sum_pos;
 
    if (duty_cycle[0] < 0) {
-      duty_cycle[0] = 0;
-   }
-   if (duty_cycle[1] < 0) {
-      duty_cycle[1] = 0;
+      duty_cycle[0] = 0.0;
+   } else if (duty_cycle[0] > 1) {
+      duty_cycle[0] = 1.0;
    }
 
-//   if (duty_cycle[0] < pwm_min) {
-//      duty_cycle[0] = pwm_min;
-//   } else if (duty_cycle[0] > pwm_max) {
-//      duty_cycle[0] = pwm_max;
-//   }
-//
-//   if (duty_cycle[1] < pwm_min) {
-//      duty_cycle[1] = pwm_min;
-//   } else if (duty_cycle[1] > pwm_max) {
-//      duty_cycle[1] = pwm_max;
-//   }
+   if (duty_cycle[1] < 0) {
+      duty_cycle[1] = 0.0;
+   } else if (duty_cycle[1] > 1) {
+      duty_cycle[1] = 1.0;
+   }
 }
 
 // Take int array containing current speeds of motors, int containing difference
