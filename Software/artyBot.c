@@ -125,10 +125,6 @@ void driveStraightPosControl() {
       }
       usleep(100000);
       pos_diff = getPositionDifference();
-      int d1 = (int) (100 * duty_cycle[0]);
-      int d2 = (int) (100 * duty_cycle[1]);
-      xil_printf("%3d   %3d\r", d1, d2);
-//      xil_printf("%3d\r", pos_diff);
    }
 }
 
