@@ -134,7 +134,7 @@ void driveStraightSpeedPosControl() {
 
    PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
 
-   MOTOR1_FORWARD;
+   MOTOR1_FORWARD; // Set motor directions to forward
    MOTOR2_FORWARD;
 
    int motor_speed[2];
@@ -151,12 +151,14 @@ void driveStraightSpeedPosControl() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
       if (sw0) {
          PWM_Enable(PWM_BASEADDR);
-         getSpeedPosCorrection(motor_speed, pos_diff, duty_cycle);
+         getSpeedCorrection(motor_speed, duty_cycle);
+         getPosCorrection(pos_diff, duty_cycle);
          //xil_printf("%3d   %3d\r", motor_speed[0], motor_speed[1]);
          //xil_printf("%3d   %3d\r", (int) (100 * duty_cycle[0]), (int) (100 * duty_cycle[1]));
          //xil_printf("pos_diff = %5d\r", pos_diff);
       } else {
          PWM_Disable(PWM_BASEADDR);
+         clearPosCounter();
          resetErrors();
       }
       clearSpeedCounters();
