@@ -12,8 +12,8 @@
 #define K_INTG_SPEED 0.0005
 #define K_DIFF_SPEED 0
 
-#define K_PROP_POS 0.00008
-#define K_INTG_POS 0.00003
+#define K_PROP_POS 0.00004
+#define K_INTG_POS 0.000015
 #define K_DIFF_POS 0
 
 #define K_PROP_SPEEDPOS 0.0005
@@ -65,12 +65,16 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
    duty_cycle[1] = duty_cycle[1] + K_PROP_POS * pos_diff
                                  + K_INTG_POS * err_sum_pos;
 
-   if (duty_cycle[0] < pwm_min || duty_cycle[0] > pwm_max) {
+   if (duty_cycle[0] < pwm_min) {
       duty_cycle[0] = pwm_min;
+   } else if (duty_cycle[0] > pwm_max) {
+      duty_cycle[0] = pwm_max;
    }
 
-   if (duty_cycle[1] < pwm_min || duty_cycle[1] > pwm_max) {
+   if (duty_cycle[1] < pwm_min) {
       duty_cycle[1] = pwm_min;
+   } else if (duty_cycle[1] > pwm_max) {
+      duty_cycle[1] = pwm_max;
    }
 }
 

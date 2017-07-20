@@ -121,6 +121,7 @@ void driveStraightPosControl() {
          getPosCorrection(pos_diff, duty_cycle);
       } else {
          PWM_Disable(PWM_BASEADDR);
+         clearPosCounter();
          resetErrors();
       }
       usleep(100000);
