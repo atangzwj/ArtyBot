@@ -154,7 +154,7 @@ void driveStraightSpeedPosControl() {
          getSpeedCorrection(motor_speed, duty_cycle);
          getPosCorrection(pos_diff, duty_cycle);
          //xil_printf("%3d   %3d\r", motor_speed[0], motor_speed[1]);
-         //xil_printf("%3d   %3d\r", (int) (100 * duty_cycle[0]), (int) (100 * duty_cycle[1]));
+//         xil_printf("%3d   %3d\r", (int) (100 * duty_cycle[0]), (int) (100 * duty_cycle[1]));
          //xil_printf("pos_diff = %5d\r", pos_diff);
       } else {
          PWM_Disable(PWM_BASEADDR);
