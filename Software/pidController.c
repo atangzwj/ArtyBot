@@ -10,7 +10,7 @@
 #define K_PROP_SPEED 0.004
 #define K_INTG_SPEED 0.0005
 
-#define K_PROP_POS 0.00005
+#define K_PROP_POS 0.00007
 #define K_INTG_POS 0.000028
 
 int err_sum_speed[2]  = {0, 0};
