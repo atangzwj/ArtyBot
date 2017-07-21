@@ -7,10 +7,11 @@
  *  ArtyBot function definitions
  */
 
-#include "microblaze_sleep.h"
-#include "pidController.h"
-#include "motorControl.h"
 #include "artyBot.h"
+#include "microblaze_sleep.h"
+#include "motorControl.h"
+#include "pidController.h"
+#include "PWM.h"
 
 // Turns both motors on at half speed when SW0 is toggled on (milestone 2)
 void motorSwitch() {
@@ -85,7 +86,7 @@ void driveStraightSpeedControl() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
       if (sw0) {
          PWM_Enable(PWM_BASEADDR);
-         getSpeedCorrection(motor_speed, duty_cycle);
+         getSpeedCorrection(100, motor_speed, duty_cycle);
       } else {
          PWM_Disable(PWM_BASEADDR);
          resetErrors();
@@ -93,36 +94,6 @@ void driveStraightSpeedControl() {
       clearSpeedCounters();
       usleep(50000);
       measureSpeed(motor_speed);
-   }
-}
-
-void driveStraightPosControl() {
-   PWM_Set_Period(PWM_BASEADDR, PWM_PER);
-
-   PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
-
-   MOTOR1_FORWARD; // Set motor directions to forward
-   MOTOR2_FORWARD;
-
-   int pos_diff = getPositionDifference();
-
-   int sw0 = 0;
-   double duty_cycle[2] = {0.4, 0.4};
-   while (1) {
-      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
-      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
-
-      sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
-      if (sw0) {
-         PWM_Enable(PWM_BASEADDR);
-         getPosCorrection(pos_diff, duty_cycle);
-      } else {
-         PWM_Disable(PWM_BASEADDR);
-         clearPosCounter();
-         resetErrors();
-      }
-      usleep(50000);
-      pos_diff = getPositionDifference();
    }
 }
 
@@ -148,7 +119,7 @@ void driveStraightSpeedPosControl() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
       if (sw0) {
          PWM_Enable(PWM_BASEADDR);
-         getSpeedCorrection(motor_speed, duty_cycle);
+         getSpeedCorrection(70, motor_speed, duty_cycle);
          getPosCorrection(pos_diff, duty_cycle);
       } else {
          PWM_Disable(PWM_BASEADDR);
