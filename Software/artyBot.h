@@ -10,12 +10,6 @@
 #ifndef SRC_ARTYBOT_H_
 #define SRC_ARTYBOT_H_
 
-/************ Include Files ************/
-
-#include "xparameters.h"
-#include "PWM.h"
-
-
 /************ Function Prototypes ************/
 
 void motorSwitch();
