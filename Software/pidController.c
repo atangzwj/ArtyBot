@@ -54,10 +54,22 @@ void getSpeedCorrection(int speed_sp, int speed[], double duty_cycle[]) {
 void getPosCorrection(int pos_diff, double duty_cycle[]) {
    err_sum_pos += pos_diff;
 
-   duty_cycle[0] = duty_cycle[0] - K_PROP_POS * pos_diff
-                                 - K_INTG_POS * err_sum_pos;
-   duty_cycle[1] = duty_cycle[1] + K_PROP_POS * pos_diff
-                                 + K_INTG_POS * err_sum_pos;
+//   duty_cycle[0] = duty_cycle[0] - K_PROP_POS * pos_diff
+//                                 - K_INTG_POS * err_sum_pos;
+//   duty_cycle[1] = duty_cycle[1] + K_PROP_POS * pos_diff
+//                                 + K_INTG_POS * err_sum_pos;
+
+   if (pos_diff > 0) {
+      duty_cycle[0] = 0;
+      duty_cycle[1] = duty_cycle[1] + K_PROP_POS * pos_diff
+                                    + K_INTG_POS * err_sum_pos;
+   } else if (pos_diff < 0) {
+      duty_cycle[0] = duty_cycle[0] - K_PROP_POS * pos_diff
+                                    - K_INTG_POS * err_sum_pos;
+      duty_cycle[1] = 0;
+   }
+
+
 
    // Bound duty cycles between 0 and 1
    if (duty_cycle[0] < 0) {
