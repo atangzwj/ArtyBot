@@ -94,7 +94,7 @@ void driveStraightSpeedControl() {
          resetErrors();
       }
       clearSpeedCounters();
-      usleep(50000);
+      usleep(40000);
       measureSpeed(motor_speed);
       speed_sp = (XGpio_DiscreteRead(xgpio1, SW_CHANNEL) >> 1) * 10 + 30;
    }
