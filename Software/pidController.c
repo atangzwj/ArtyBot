@@ -30,7 +30,7 @@ int err_prev_pos = 0;
 // Takes a double array to store new duty cycle for motor1, motor2, respectively
 // Assumes that this function gets called at regular time intervals
 void getSpeedCorrection(int speed[], double duty_cycle[]) {
-	int error_m1 = SP_SPEED - speed[0]; // Current error
+   int error_m1 = SP_SPEED - speed[0]; // Current error
    int error_m2 = SP_SPEED - speed[1];
 
    err_sum_speed[0] += error_m1; // Accumulated error
@@ -85,36 +85,36 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
 // new duty cycles for motor1 and motor2, respectively
 // Client must maintain positional difference between the two motors
 void getSpeedPosCorrection(int speed[], int pos_diff, double duty_cycle[]) {
-	// Current errors
-	int spd_error_m1 = SP_SPEED - speed[0];
-	int spd_error_m2 = SP_SPEED - speed[1];
+   // Current errors
+   int spd_error_m1 = SP_SPEED - speed[0];
+   int spd_error_m2 = SP_SPEED - speed[1];
 
-	// Accumulated errors
-	err_sum_speed[0] += spd_error_m1;
-	err_sum_speed[1] += spd_error_m2;
+   // Accumulated errors
+   err_sum_speed[0] += spd_error_m1;
+   err_sum_speed[1] += spd_error_m2;
 
-	err_sum_pos += pos_diff;
+   err_sum_pos += pos_diff;
 
-	// New duty cycle computation
-	duty_cycle[0] =   K_PROP_SPEEDPOS *  spd_error_m1
-						 + K_INTG_SPEEDPOS *  err_sum_speed[0]
-					    + K_DIFF_SPEEDPOS * (spd_error_m1 - err_prev_speed[0])
-						 - K_PROP_POS 		 *  pos_diff
-						 - K_INTG_POS 		 *  err_sum_pos
-						 - K_DIFF_POS 		 * (pos_diff - err_prev_pos);
+   // New duty cycle computation
+   duty_cycle[0] =   K_PROP_SPEEDPOS *  spd_error_m1
+                   + K_INTG_SPEEDPOS *  err_sum_speed[0]
+                   + K_DIFF_SPEEDPOS * (spd_error_m1 - err_prev_speed[0])
+                   - K_PROP_POS      *  pos_diff
+                   - K_INTG_POS      *  err_sum_pos
+                   - K_DIFF_POS      * (pos_diff - err_prev_pos);
 
-	duty_cycle[1] =   K_PROP_SPEEDPOS *  spd_error_m2
-						 + K_INTG_SPEEDPOS *  err_sum_speed[1]
-					    + K_DIFF_SPEEDPOS * (spd_error_m2 - err_prev_speed[1])
-						 + K_PROP_POS 		 *  pos_diff
-						 + K_INTG_POS 		 *  err_sum_pos
-						 + K_DIFF_POS 		 * (pos_diff - err_prev_pos);
+   duty_cycle[1] =   K_PROP_SPEEDPOS *  spd_error_m2
+                   + K_INTG_SPEEDPOS *  err_sum_speed[1]
+                   + K_DIFF_SPEEDPOS * (spd_error_m2 - err_prev_speed[1])
+                   + K_PROP_POS      *  pos_diff
+                   + K_INTG_POS      *  err_sum_pos
+                   + K_DIFF_POS      * (pos_diff - err_prev_pos);
 
-	// Previous errors
-	err_prev_speed[0] = spd_error_m1; // Current errors become previous errors
-	err_prev_speed[1] = spd_error_m2; // for next sample
+   // Previous errors
+   err_prev_speed[0] = spd_error_m1; // Current errors become previous errors
+   err_prev_speed[1] = spd_error_m2; // for next sample
 
-	err_prev_pos = pos_diff;
+   err_prev_pos = pos_diff;
 }
 
 // Reset accumulated error and previous error to 0
