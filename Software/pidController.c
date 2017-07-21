@@ -59,15 +59,36 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
 //   duty_cycle[1] = duty_cycle[1] + K_PROP_POS * pos_diff
 //                                 + K_INTG_POS * err_sum_pos;
 
+//   if (pos_diff > 0) {
+//      duty_cycle[0] = (pos_diff > 24) ? 0 : (duty_cycle[0] / 2);
+//      duty_cycle[1] = duty_cycle[1] + K_PROP_POS * pos_diff
+//                                    + K_INTG_POS * err_sum_pos;
+//   } else if (pos_diff < 0) {
+//      duty_cycle[0] = duty_cycle[0] - K_PROP_POS * pos_diff
+//                                    - K_INTG_POS * err_sum_pos;
+//      duty_cycle[1] = (pos_diff < -24) ? 0 : (duty_cycle[1] / 2);
+//   }
+
+
    if (pos_diff > 0) {
-      duty_cycle[0] = (pos_diff > 24) ? 0 : (duty_cycle[0] / 2);
-      duty_cycle[1] = duty_cycle[1] + K_PROP_POS * pos_diff
-                                    + K_INTG_POS * err_sum_pos;
+      if (pos_diff > 24) {
+         duty_cycle[0] = 0;
+      } else if (pos_diff > 18) {
+         duty_cycle[0] /= 4;
+      } else {
+         duty_cycle[0] /= 2;
+      }
    } else if (pos_diff < 0) {
-      duty_cycle[0] = duty_cycle[0] - K_PROP_POS * pos_diff
-                                    - K_INTG_POS * err_sum_pos;
-      duty_cycle[1] = (pos_diff < -24) ? 0 : (duty_cycle[1] / 2);
+      if (pos_diff < -24) {
+         duty_cycle[1] = 0;
+      } else if (pos_diff < -18) {
+         duty_cycle[1] /= 4;
+      } else {
+         duty_cycle[1] /= 2;
+      }
    }
+
+
 
 
 
