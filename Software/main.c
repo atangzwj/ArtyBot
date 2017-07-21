@@ -7,10 +7,9 @@
  *  Main program for the ArtyBot.
  */
 
-#include "platform.h"
-#include "motorControl.h"
 #include "artyBot.h"
-#include "microblaze_sleep.h"
+#include "motorControl.h"
+#include "platform.h"
 
 int main() {
 	init_platform();
