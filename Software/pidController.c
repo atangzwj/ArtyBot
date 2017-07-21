@@ -5,7 +5,12 @@
  *      Author: Arvin Tang
  */
 
+/************ Include Files ************/
+
 #include "pidController.h"
+
+
+/************ Macro Definitions ************/
 
 #define K_PROP_SPEED 0.004
 #define K_INTG_SPEED 0.0005
@@ -13,11 +18,17 @@
 #define K_PROP_POS 0.00007
 #define K_INTG_POS 0.000028
 
+
+/************ Global Variables ************/
+
 int err_sum_speed[2]  = {0, 0};
 int err_prev_speed[2] = {0, 0};
 
 int err_sum_pos  = 0;
 int err_prev_pos = 0;
+
+
+/************ Function Definitions ************/
 
 // Takes an int array containing current speeds for motor1, motor2, respectively
 // Takes a double array to store new duty cycle for motor1, motor2, respectively
@@ -54,22 +65,6 @@ void getSpeedCorrection(int speed_sp, int speed[], double duty_cycle[]) {
 void getPosCorrection(int pos_diff, double duty_cycle[]) {
    err_sum_pos += pos_diff;
 
-//   duty_cycle[0] = duty_cycle[0] - K_PROP_POS * pos_diff
-//                                 - K_INTG_POS * err_sum_pos;
-//   duty_cycle[1] = duty_cycle[1] + K_PROP_POS * pos_diff
-//                                 + K_INTG_POS * err_sum_pos;
-
-//   if (pos_diff > 0) {
-//      duty_cycle[0] = (pos_diff > 24) ? 0 : (duty_cycle[0] / 2);
-//      duty_cycle[1] = duty_cycle[1] + K_PROP_POS * pos_diff
-//                                    + K_INTG_POS * err_sum_pos;
-//   } else if (pos_diff < 0) {
-//      duty_cycle[0] = duty_cycle[0] - K_PROP_POS * pos_diff
-//                                    - K_INTG_POS * err_sum_pos;
-//      duty_cycle[1] = (pos_diff < -24) ? 0 : (duty_cycle[1] / 2);
-//   }
-
-
    if (pos_diff > 0) {
       if (pos_diff > 24) {
          duty_cycle[0] = 0;
@@ -87,10 +82,6 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
          duty_cycle[1] /= 2;
       }
    }
-
-
-
-
 
    // Bound duty cycles between 0 and 1
    if (duty_cycle[0] < 0) {
