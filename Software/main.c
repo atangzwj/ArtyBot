@@ -12,7 +12,7 @@
 #include "platform.h"
 
 int main() {
-	init_platform();
+   init_platform();
 
    initIO();
 
