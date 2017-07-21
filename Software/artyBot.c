@@ -75,6 +75,8 @@ void driveStraightSpeedControl() {
    MOTOR1_FORWARD;  // Set motor directions to forward
    MOTOR2_FORWARD;
 
+   int speed_sp = (XGpio_DiscreteRead(xgpio1, SW_CHANNEL) >> 1) * 10 + 30;
+
    int motor_speed[2];
    measureSpeed(motor_speed);
    int sw0 = 0;
@@ -86,7 +88,7 @@ void driveStraightSpeedControl() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
       if (sw0) {
          PWM_Enable(PWM_BASEADDR);
-         getSpeedCorrection(100, motor_speed, duty_cycle);
+         getSpeedCorrection(speed_sp, motor_speed, duty_cycle);
       } else {
          PWM_Disable(PWM_BASEADDR);
          resetErrors();
@@ -94,6 +96,7 @@ void driveStraightSpeedControl() {
       clearSpeedCounters();
       usleep(50000);
       measureSpeed(motor_speed);
+      speed_sp = (XGpio_DiscreteRead(xgpio1, SW_CHANNEL) >> 1) * 10 + 30;
    }
 }
 
