@@ -73,16 +73,16 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
    if (pos_diff > 0) {
       if (pos_diff > 24) {
          duty_cycle[0] = 0;
-      } else if (pos_diff > 18) {
-         duty_cycle[0] /= 4;
+      } else if (pos_diff > 14) {
+         duty_cycle[0] /= 6;
       } else {
          duty_cycle[0] /= 2;
       }
    } else if (pos_diff < 0) {
       if (pos_diff < -24) {
          duty_cycle[1] = 0;
-      } else if (pos_diff < -18) {
-         duty_cycle[1] /= 4;
+      } else if (pos_diff < -14) {
+         duty_cycle[1] /= 6;
       } else {
          duty_cycle[1] /= 2;
       }
