@@ -7,11 +7,17 @@
  *  ArtyBot function definitions
  */
 
+
+/************ Include Files ************/
+
 #include "artyBot.h"
 #include "microblaze_sleep.h"
 #include "motorControl.h"
 #include "pidController.h"
 #include "PWM.h"
+
+
+/************ Function Definitions ************/
 
 // Turns both motors on at half speed when SW0 is toggled on (milestone 2)
 void motorSwitch() {

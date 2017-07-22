@@ -8,6 +8,8 @@
 #ifndef SRC_PIDCONTROLLER_H_
 #define SRC_PIDCONTROLLER_H_
 
+/************ Function Prototypes ************/
+
 void getSpeedCorrection(int speed_sp, int speed[], double duty[]);
 
 void getPosCorrection(int pos_diff, double duty_cycle[]);

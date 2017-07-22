@@ -5,8 +5,13 @@
  *      Author: Arvin Tang
  */
 
+/************ Include Files ************/
+
 #include <stdlib.h>
 #include "motorControl.h"
+
+
+/************ Function Definitions ************/
 
 // Initialize Arty Board inputs and outputs
 void initIO() {
@@ -63,13 +68,14 @@ void clearSpeedCounters() {
    Xil_Out8(MSP_BASEADDR + CLEAR_OFFSET, 0x0);
 }
 
+// Return the difference in sensor positive edges between motor1 and motor2
 int getPositionDifference() {
    int m1_pos = (int) Xil_In16(MSP_BASEADDR + M1_POS2_OFFSET);
    int m2_pos = (int) Xil_In16(MSP_BASEADDR + M2_POS2_OFFSET);
 
    return m1_pos - m2_pos;
 }
-
+ // Clear the cumulative position counters for both motors
 void clearPosCounter() {
    Xil_Out8(MSP_BASEADDR + CLEAR_OFFSET, 0x2);
    Xil_Out8(MSP_BASEADDR + CLEAR_OFFSET, 0x0);
