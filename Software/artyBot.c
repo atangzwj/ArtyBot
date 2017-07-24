@@ -117,7 +117,7 @@ void driveStraightPosControl() {
    int pos_diff = getPositionDifference();
 
    int sw0 = 0;
-   double duty_cycle[2] = {0.7, 0.7};
+   double duty_cycle[2] = {0.5, 0.5};
    while (1) {
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
@@ -125,8 +125,8 @@ void driveStraightPosControl() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
       if (sw0) {
          PWM_Enable(PWM_BASEADDR);
-         duty_cycle[0] = 0.7;
-         duty_cycle[1] = 0.7;
+         duty_cycle[0] = 0.5;
+         duty_cycle[1] = 0.5;
          getPosCorrection(pos_diff, duty_cycle);
       } else {
          PWM_Disable(PWM_BASEADDR);
@@ -178,6 +178,7 @@ void driveStraightSpeedPosControl() {
 }
 
 void driveStraightPosControlDebug() {
+   print("BEGINNING TEST\n\r");
    PWM_Set_Period(PWM_BASEADDR, PWM_PER);
 
    PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
@@ -190,6 +191,10 @@ void driveStraightPosControlDebug() {
    int pos_diff = getPositionDifference();
 
    double duty_cycle[2] = {0.5, 0.5};
+   int sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
+   while (!sw0) {
+      sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
+   }
    for (int i = 0; i < 250; i++) {
       data_arr[i]->pos_diff = pos_diff;
       data_arr[i]->m1_duty = duty_cycle[0];
@@ -199,16 +204,22 @@ void driveStraightPosControlDebug() {
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
 
       PWM_Enable(PWM_BASEADDR);
+
+      duty_cycle[0] = 0.5;
+      duty_cycle[1] = 0.5;
       getPosCorrection(pos_diff, duty_cycle);
 
       clearSpeedCounters();
       usleep(40000);
       pos_diff = getPositionDifference();
    }
-
-   int sw3 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x8;
-   while (!sw3) {
-      sw3 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x8;
+   PWM_Disable(PWM_BASEADDR);
+   print("PWM Disabled\n\r");
+   int sw2 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x4;
+   xil_printf("sw2 = %d\n\r", sw2);
+   while (!sw2) {
+      print("Waiting...\r");
+      sw2 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x4;
    }
    for (int i = 0; i < 250; i++) {
       xil_printf("%3d   ", i);
