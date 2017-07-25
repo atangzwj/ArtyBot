@@ -65,9 +65,9 @@ void getSpeedCorrection(int speed_sp, int speed[], double duty_cycle[]) {
 void getPosCorrection(int pos_diff, double duty_cycle[]) {
    err_sum_pos += pos_diff;
 
-   if (pos_diff > 24) {
+   if (pos_diff > 16) {
       duty_cycle[0] = 0;
-   } else if (pos_diff < -24) {
+   } else if (pos_diff < -16) {
       duty_cycle[1] = 0;
    } else if (pos_diff > 10) {
       duty_cycle[0] /= 3;
