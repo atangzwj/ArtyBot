@@ -216,7 +216,7 @@ void driveStraightPosControlDebug() {
       getPosCorrection(pos_diff, duty_cycle);
 
       clearSpeedCounters();
-      usleep(40000);
+      usleep(62500);
 
       m1_pos = Xil_In16(MSP_BASEADDR + M1_POS2_OFFSET);
       m2_pos = Xil_In16(MSP_BASEADDR + M2_POS2_OFFSET);
