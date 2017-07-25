@@ -190,30 +190,37 @@ void driveStraightPosControlDebug() {
       print("Memory allocation failed\n\r");
       return;
    }
-   int pos_diff = getPositionDifference();
+   u32 m1_pos = Xil_In16(MSP_BASEADDR + M1_POS2_OFFSET);
+   u32 m2_pos = Xil_In16(MSP_BASEADDR + M2_POS2_OFFSET);
+   int pos_diff = (int) (m1_pos - m2_pos);
 
-   double duty_cycle[2] = {0.65, 0.65};
+   double duty_cycle[2] = {0.7, 0.7};
    int sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
    while (!sw0) {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
    }
    for (int i = 0; i < 250; i++) {
-      (data_arr[i]).pos_diff = pos_diff;
-      (data_arr[i]).m1_duty = duty_cycle[0];
-      (data_arr[i]).m2_duty = duty_cycle[1];
+      data_arr[i].m1_pos = m1_pos;
+      data_arr[i].m2_pos = m2_pos;
+      data_arr[i].pos_diff = pos_diff;
+      data_arr[i].m1_duty = duty_cycle[0];
+      data_arr[i].m2_duty = duty_cycle[1];
 
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
 
       PWM_Enable(PWM_BASEADDR);
 
-      duty_cycle[0] = 0.65;
-      duty_cycle[1] = 0.65;
+      duty_cycle[0] = 0.7;
+      duty_cycle[1] = 0.7;
       getPosCorrection(pos_diff, duty_cycle);
 
       clearSpeedCounters();
       usleep(40000);
-      pos_diff = getPositionDifference();
+
+      m1_pos = Xil_In16(MSP_BASEADDR + M1_POS2_OFFSET);
+      m2_pos = Xil_In16(MSP_BASEADDR + M2_POS2_OFFSET);
+      pos_diff = (int) (m1_pos - m2_pos);
    }
    PWM_Disable(PWM_BASEADDR);
    int sw3 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x8;
@@ -222,6 +229,7 @@ void driveStraightPosControlDebug() {
    }
    for (int i = 0; i < 250; i++) {
       xil_printf("%3d   ", i);
+      xil_printf("%4x %4x   ", data_arr[i].m1_pos, data_arr[i].m2_pos);
       xil_printf("%3d   ", data_arr[i].pos_diff);
       xil_printf("%2d %2d\n\r", (int) (data_arr[i].m1_duty * 100),
                                 (int) (data_arr[i].m2_duty * 100));

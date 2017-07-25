@@ -10,10 +10,13 @@
 #ifndef SRC_ARTYBOT_H_
 #define SRC_ARTYBOT_H_
 
+#include "xil_types.h"
 
 typedef struct sample_data {
 //   int m1_speed;
 //   int m2_speed;
+   u32 m1_pos;
+   u32 m2_pos;
    int pos_diff;
    double m1_duty;
    double m2_duty;
