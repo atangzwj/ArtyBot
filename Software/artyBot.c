@@ -10,6 +10,7 @@
 
 /************ Include Files ************/
 
+#include <stdlib.h>
 #include "artyBot.h"
 #include "microblaze_sleep.h"
 #include "motorControl.h"
@@ -169,7 +170,6 @@ void driveStraightSpeedPosControl() {
          clearPosCounter();
          resetErrors();
       }
-      clearSpeedCounters();
       usleep(40000);
       measureSpeed(motor_speed);
       pos_diff = getPositionDifference();
@@ -178,7 +178,6 @@ void driveStraightSpeedPosControl() {
 }
 
 void driveStraightPosControlDebug() {
-   print("BEGINNING TEST\n\r");
    PWM_Set_Period(PWM_BASEADDR, PWM_PER);
 
    PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
@@ -186,27 +185,30 @@ void driveStraightPosControlDebug() {
    MOTOR1_FORWARD; // Set motor directions to forward
    MOTOR2_FORWARD;
 
-   sample_data *data_arr[250];
-
+   sample_data *data_arr = (sample_data*) (calloc(250, sizeof(sample_data)));
+   if (data_arr == NULL) {
+      print("Memory allocation failed\n\r");
+      return;
+   }
    int pos_diff = getPositionDifference();
 
-   double duty_cycle[2] = {0.5, 0.5};
+   double duty_cycle[2] = {0.65, 0.65};
    int sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
    while (!sw0) {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
    }
    for (int i = 0; i < 250; i++) {
-      data_arr[i]->pos_diff = pos_diff;
-      data_arr[i]->m1_duty = duty_cycle[0];
-      data_arr[i]->m2_duty = duty_cycle[1];
+      (data_arr[i]).pos_diff = pos_diff;
+      (data_arr[i]).m1_duty = duty_cycle[0];
+      (data_arr[i]).m2_duty = duty_cycle[1];
 
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
 
       PWM_Enable(PWM_BASEADDR);
 
-      duty_cycle[0] = 0.5;
-      duty_cycle[1] = 0.5;
+      duty_cycle[0] = 0.65;
+      duty_cycle[1] = 0.65;
       getPosCorrection(pos_diff, duty_cycle);
 
       clearSpeedCounters();
@@ -214,17 +216,14 @@ void driveStraightPosControlDebug() {
       pos_diff = getPositionDifference();
    }
    PWM_Disable(PWM_BASEADDR);
-   print("PWM Disabled\n\r");
-   int sw2 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x4;
-   xil_printf("sw2 = %d\n\r", sw2);
-   while (!sw2) {
-      print("Waiting...\r");
-      sw2 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x4;
+   int sw3 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x8;
+   while (!sw3) {
+      sw3 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x8;
    }
    for (int i = 0; i < 250; i++) {
       xil_printf("%3d   ", i);
-      xil_printf("%3d   ", data_arr[i]->pos_diff);
-      xil_printf("%2d %2d\n\r", (int) (data_arr[i]->m1_duty * 100),
-                                (int) (data_arr[i]->m2_duty * 100));
+      xil_printf("%3d   ", data_arr[i].pos_diff);
+      xil_printf("%2d %2d\n\r", (int) (data_arr[i].m1_duty * 100),
+                                (int) (data_arr[i].m2_duty * 100));
    }
 }
