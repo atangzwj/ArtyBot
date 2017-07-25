@@ -72,7 +72,7 @@ void clearSpeedCounters() {
 int getPositionDifference() {
    int m1_pos = (int) Xil_In16(MSP_BASEADDR + M1_POS2_OFFSET);
    int m2_pos = (int) Xil_In16(MSP_BASEADDR + M2_POS2_OFFSET);
-
+   clearPosCounter();
    return m1_pos - m2_pos;
 }
  // Clear the cumulative position counters for both motors
