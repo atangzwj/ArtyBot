@@ -177,6 +177,36 @@ void driveStraightSpeedPosControl() {
    }
 }
 
+void sensorDebug() {
+   PWM_Set_Period(PWM_BASEADDR, PWM_PER);
+   PWM_Set_Duty(PWM_BASEADDR, PWM_PER / 3, PWM_M1);
+   PWM_Set_Duty(PWM_BASEADDR, PWM_PER / 3, PWM_M2);
+
+   PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
+
+   MOTOR1_FORWARD; // Set motor directions to forward
+   MOTOR2_FORWARD;
+
+   int m1_prev = 0;
+   int m2_prev = 0;
+
+   while (1) {
+      int m1_pos = Xil_In16(MSP_BASEADDR + M1_POS_OFFSET);
+      int m2_pos = Xil_In16(MSP_BASEADDR + M2_POS_OFFSET);
+      int sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
+      if (sw0) {
+         PWM_Enable(PWM_BASEADDR);
+         xil_printf("%4x  %4x  %4d %4d\n\r", m1_pos, m2_pos, m1_pos - m1_prev,
+                                             m2_pos - m2_prev);
+      } else {
+         PWM_Disable(PWM_BASEADDR);
+      }
+      m1_prev = m1_pos;
+      m2_prev = m2_pos;
+      usleep(62500);
+   }
+}
+
 void driveStraightPosControlDebug() {
    PWM_Set_Period(PWM_BASEADDR, PWM_PER);
 

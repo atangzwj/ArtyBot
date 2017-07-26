@@ -35,6 +35,8 @@ void driveStraightPosControl();
 
 void driveStraightSpeedPosControl();
 
+void sensorDebug();
+
 void driveStraightPosControlDebug();
 
 #endif /* SRC_ARTYBOT_H_ */
