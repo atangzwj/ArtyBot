@@ -416,20 +416,20 @@ module MotorSpeedPosition_v1_0_S00_AXI #
    wire [1:0] clear;
    assign clear = slv_reg0[1:0];
    
-   wire [15:0] m1_pos1, m1_pos2, m2_pos1, m2_pos2;
+   wire [15:0] m1_pos1, m1_pos2, m2_pos1, m2_pos2, pos_diff;
    wire [31:0] count_clk;
-   assign slv_reg1 = {16'b0, m1_pos1};
-   assign slv_reg2 = {16'b0, m1_pos2};
-   assign slv_reg3 = {16'b0, m2_pos1};
-   assign slv_reg4 = {16'b0, m2_pos2};
-   assign slv_reg5 = count_clk;
-   
+   assign slv_reg1 = {m1_pos1, m1_pos2};
+   assign slv_reg2 = {m2_pos1, m2_pos2};
+   assign slv_reg3 = {16'b0, pos_diff};
+   assign slv_reg4 = count_clk;
+
    posManager pos_manager (
       .clk(S_AXI_ACLK),
       .pos11(m1_pos1),
       .pos12(m1_pos2),
       .pos21(m2_pos1),
       .pos22(m2_pos2),
+      .pos_diff(pos_diff),
       .count_clk(count_clk),
       .m1(m1_feedback),
       .m2(m2_feedback),

@@ -24,6 +24,7 @@ module posManager (
    output wire [15:0] pos12,
    output wire [15:0] pos21,
    output wire [15:0] pos22,
+   output wire [15:0] pos_diff,
    output reg  [31:0] count_clk,
    input  wire        m1,
    input  wire        m2,
@@ -48,6 +49,8 @@ module posManager (
       else               distance = pos22;
    end
 
+   assign pos_diff = pos12 - pos22;
+
    posCounter pos_counter1 (
       .clk(clk),
       .pos1(pos11),
@@ -71,7 +74,7 @@ endmodule
 
 module posManager_testbench ();
    reg         clk;
-   wire [15:0] pos11, pos12, pos21, pos22;
+   wire [15:0] pos11, pos12, pos21, pos22, pos_diff;
    wire [31:0] count_clk;
    reg         m1, m2;
    reg  [1:0]  clear;
@@ -82,6 +85,7 @@ module posManager_testbench ();
       .pos12(pos12),
       .pos21(pos21),
       .pos22(pos22),
+      .pos_diff(pos_diff),
       .count_clk(count_clk),
       .m1(m1),
       .m2(m2),
