@@ -130,6 +130,16 @@ module posManager_testbench ();
       end
                            clear <= 2'b11; @(posedge clk);
                            clear <= 2'b00; @(posedge clk);
+                  m2 <= 0;                 @(posedge clk);
+                  m2 <= 1;                 @(posedge clk);
+                  m2 <= 0;                 @(posedge clk);
+                  m2 <= 1;                 @(posedge clk);
+                  m2 <= 0;                 @(posedge clk);
+                  m2 <= 1;                 @(posedge clk);
+                  m2 <= 0;                 @(posedge clk);
+                  m2 <= 1;                 @(posedge clk);
+                  m2 <= 0;                 @(posedge clk);
+                  m2 <= 1;                 @(posedge clk);
       $stop;
    end
 endmodule
