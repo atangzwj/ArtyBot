@@ -12,7 +12,6 @@
 #include "artyBot.h"
 #include "motorControl.h"
 #include "platform.h"
-#include "microblaze_sleep.h"
 
 
 /************ Function Definitions ************/
@@ -22,7 +21,7 @@ int main() {
 
    initIO();
    clearPosCounter();
-   driveStraightPosControlDebug();
+   sensorDebug();
 
    cleanup_platform();
    return 0;
