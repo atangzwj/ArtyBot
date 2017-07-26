@@ -190,8 +190,8 @@ void driveStraightPosControlDebug() {
       print("Memory allocation failed\n\r");
       return;
    }
-   u32 m1_pos = Xil_In16(MSP_BASEADDR + M1_POS2_OFFSET);
-   u32 m2_pos = Xil_In16(MSP_BASEADDR + M2_POS2_OFFSET);
+   u16 m1_pos = Xil_In16(MSP_BASEADDR + M1_POS_OFFSET);
+   u16 m2_pos = Xil_In16(MSP_BASEADDR + M2_POS_OFFSET);
    int pos_diff = (int) (m1_pos - m2_pos);
 
    double duty_cycle[2] = {0.7, 0.7};
@@ -218,8 +218,8 @@ void driveStraightPosControlDebug() {
       clearSpeedCounters();
       usleep(62500);
 
-      m1_pos = Xil_In16(MSP_BASEADDR + M1_POS2_OFFSET);
-      m2_pos = Xil_In16(MSP_BASEADDR + M2_POS2_OFFSET);
+      m1_pos = Xil_In16(MSP_BASEADDR + M1_POS_OFFSET);
+      m2_pos = Xil_In16(MSP_BASEADDR + M2_POS_OFFSET);
       pos_diff = (int) (m1_pos - m2_pos);
    }
    PWM_Disable(PWM_BASEADDR);

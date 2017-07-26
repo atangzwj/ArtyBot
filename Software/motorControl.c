@@ -54,11 +54,11 @@ void measureSpeed(int motor_speed[]) {
 // Take 2 int arrays for storing sensor edge and clock edge counts for computing
 // speed of each motor
 void getEdgeCounts(int m1[], int m2[]) {
-   m1[0] = (int) Xil_In32(MSP_BASEADDR + M1_POS1_OFFSET);
-   m1[1] = (int) Xil_In32(MSP_BASEADDR + MSP_CLK_OFFSET);
+   m1[0] = (int) (Xil_In32(MSP_BASEADDR + M1_POS_OFFSET) >> 16);
+   m1[1] = (int)  Xil_In32(MSP_BASEADDR + CLK_OFFSET);
 
-   m2[0] = (int) Xil_In32(MSP_BASEADDR + M2_POS1_OFFSET);
-   m2[1] = (int) Xil_In32(MSP_BASEADDR + MSP_CLK_OFFSET);
+   m2[0] = (int) (Xil_In32(MSP_BASEADDR + M2_POS_OFFSET) >> 16);
+   m2[1] = (int)  Xil_In32(MSP_BASEADDR + CLK_OFFSET);
 }
 
 // Clear the registers storing counts of sensor edges and clock edges for
@@ -70,10 +70,7 @@ void clearSpeedCounters() {
 
 // Return the difference in sensor positive edges between motor1 and motor2
 int getPositionDifference() {
-   int m1_pos = (int) Xil_In16(MSP_BASEADDR + M1_POS2_OFFSET);
-   int m2_pos = (int) Xil_In16(MSP_BASEADDR + M2_POS2_OFFSET);
-   clearPosCounter();
-   return m1_pos - m2_pos;
+   return (int) Xil_In16(MSP_BASEADDR + POS_DIFF_OFFSET);
 }
  // Clear the cumulative position counters for both motors
 void clearPosCounter() {
