@@ -77,4 +77,3 @@ void clearPosCounter() {
    Xil_Out8(MSP_BASEADDR + CLEAR_OFFSET, 0x2);
    Xil_Out8(MSP_BASEADDR + CLEAR_OFFSET, 0x0);
 }
-
