@@ -62,7 +62,7 @@ void getEdgeCounts(int m1[], int m2[]);
 
 void clearSpeedCounters();
 
-int getPositionDifference();
+int16_t getPositionDifference();
 
 void clearPosCounter();
 

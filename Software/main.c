@@ -21,7 +21,7 @@ int main() {
 
    initIO();
    clearPosCounter();
-   sensorDebug();
+   driveStraightSpeedControl();
 
    cleanup_platform();
    return 0;

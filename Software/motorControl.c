@@ -69,8 +69,8 @@ void clearSpeedCounters() {
 }
 
 // Return the difference in sensor positive edges between motor1 and motor2
-int getPositionDifference() {
-   return (int) Xil_In16(MSP_BASEADDR + POS_DIFF_OFFSET);
+int16_t getPositionDifference() {
+   return (int16_t) Xil_In16(MSP_BASEADDR + POS_DIFF_OFFSET);
 }
  // Clear the cumulative position counters for both motors
 void clearPosCounter() {
