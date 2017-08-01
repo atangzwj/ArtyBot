@@ -2,9 +2,9 @@
 <Root MajorVersion="0" MinorVersion="33">
   <CompositeFile CompositeFileTopName="artyBot" CanBeSetAsTop="false" CanDisplayChildGraph="true">
     <Description>Composite Fileset</Description>
-    <Generation Name="SYNTHESIS" State="RESET" Timestamp="1500488128"/>
-    <Generation Name="IMPLEMENTATION" State="RESET" Timestamp="1500488128"/>
-    <Generation Name="SIMULATION" State="RESET" Timestamp="1500488128"/>
+    <Generation Name="SYNTHESIS" State="GENERATED" Timestamp="1501610373"/>
+    <Generation Name="IMPLEMENTATION" State="GENERATED" Timestamp="1501610373"/>
+    <Generation Name="SIMULATION" State="GENERATED" Timestamp="1501610373"/>
     <FileCollection Name="SOURCES" Type="SOURCES">
       <File Name="ip\artyBot_clk_wiz_0_0\artyBot_clk_wiz_0_0.xci" Type="IP">
         <Instance HierarchyPath="clk_wiz_0"/>
@@ -134,14 +134,6 @@
         <UsedIn Val="IMPLEMENTATION"/>
         <UsedIn Val="SIMULATION"/>
       </File>
-      <File Name="ip\artyBot_hBridgeConnector_0_0\artyBot_hBridgeConnector_0_0.xci" Type="IP">
-        <Instance HierarchyPath="hBridgeConnector_0"/>
-        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
-        <Library Name="xil_defaultlib"/>
-        <UsedIn Val="SYNTHESIS"/>
-        <UsedIn Val="IMPLEMENTATION"/>
-        <UsedIn Val="SIMULATION"/>
-      </File>
       <File Name="ip\artyBot_axi_gpio_0_0\artyBot_axi_gpio_0_0.xci" Type="IP">
         <Instance HierarchyPath="axi_gpio_0"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
@@ -152,22 +144,6 @@
       </File>
       <File Name="ip\artyBot_axi_gpio_1_0\artyBot_axi_gpio_1_0.xci" Type="IP">
         <Instance HierarchyPath="axi_gpio_1"/>
-        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
-        <Library Name="xil_defaultlib"/>
-        <UsedIn Val="SYNTHESIS"/>
-        <UsedIn Val="IMPLEMENTATION"/>
-        <UsedIn Val="SIMULATION"/>
-      </File>
-      <File Name="ip\artyBot_Edge_Counter_0_3\artyBot_Edge_Counter_0_3.xci" Type="IP">
-        <Instance HierarchyPath="Edge_Counter_0"/>
-        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
-        <Library Name="xil_defaultlib"/>
-        <UsedIn Val="SYNTHESIS"/>
-        <UsedIn Val="IMPLEMENTATION"/>
-        <UsedIn Val="SIMULATION"/>
-      </File>
-      <File Name="ip\artyBot_Edge_Counter_1_1\artyBot_Edge_Counter_1_1.xci" Type="IP">
-        <Instance HierarchyPath="Edge_Counter_1"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
         <Library Name="xil_defaultlib"/>
         <UsedIn Val="SYNTHESIS"/>
@@ -191,6 +167,86 @@
       </File>
       <File Name="ip\artyBot_MotorSpeedPosition_0_0\artyBot_MotorSpeedPosition_0_0.xci" Type="IP">
         <Instance HierarchyPath="MotorSpeedPosition_0"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_xlconcat_0_0\artyBot_xlconcat_0_0.xci" Type="IP">
+        <Instance HierarchyPath="xlconcat_top_row_O"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_xlslice_0_1\artyBot_xlslice_0_1.xci" Type="IP">
+        <Instance HierarchyPath="xlslice_EN1"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_xlslice_1_0\artyBot_xlslice_1_0.xci" Type="IP">
+        <Instance HierarchyPath="xlslice_EN2"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_xlconcat_0_1\artyBot_xlconcat_0_1.xci" Type="IP">
+        <Instance HierarchyPath="xlconcat_bottom_row_O"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_xlslice_0_2\artyBot_xlslice_0_2.xci" Type="IP">
+        <Instance HierarchyPath="xlslice_DIR2"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_xlslice_1_1\artyBot_xlslice_1_1.xci" Type="IP">
+        <Instance HierarchyPath="xlslice_DIR1"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_xlconstant_0_0\artyBot_xlconstant_0_0.xci" Type="IP">
+        <Instance HierarchyPath="xlconstant_0"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_xlslice_0_3\artyBot_xlslice_0_3.xci" Type="IP">
+        <Instance HierarchyPath="xlslice_m1_feedback"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_xlslice_1_2\artyBot_xlslice_1_2.xci" Type="IP">
+        <Instance HierarchyPath="xlslice_m2_feedback"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_xlconstant_1_0\artyBot_xlconstant_1_0.xci" Type="IP">
+        <Instance HierarchyPath="xlconstant_1"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
         <Library Name="xil_defaultlib"/>
         <UsedIn Val="SYNTHESIS"/>
