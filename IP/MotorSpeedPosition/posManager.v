@@ -44,9 +44,11 @@ module posManager (
    always @ (posedge clk) begin
       if (clear[0]) count_clk <= 32'b0;
       else          count_clk <= count_clk + 1'b1;
-      
-      m1_clean <= m1;
-      m2_clean <= m2;
+
+      m1_delay <= m1;
+      m2_delay <= m2;
+      m1_clean <= m1_delay;
+      m2_clean <= m2_delay;
    end
 
    wire subtract;
