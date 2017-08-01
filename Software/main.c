@@ -21,7 +21,7 @@ int main() {
 
    initIO();
    clearPosCounter();
-   driveStraightPosControl();
+   driveStraightPosControlDebug();
 
    cleanup_platform();
    return 0;

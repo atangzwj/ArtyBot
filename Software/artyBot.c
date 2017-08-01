@@ -115,10 +115,12 @@ void driveStraightPosControl() {
    MOTOR1_FORWARD; // Set motor directions to forward
    MOTOR2_FORWARD;
 
+   double base_duty = (XGpio_DiscreteRead(xgpio1, SW_CHANNEL) >> 1) * 0.05 + 0.6;
+
    int16_t pos_diff = getPositionDifference();
 
    int sw0 = 0;
-   double duty_cycle[2] = {0.7, 0.7};
+   double duty_cycle[2] = {base_duty, base_duty};
    while (1) {
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
@@ -126,8 +128,8 @@ void driveStraightPosControl() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
       if (sw0) {
          PWM_Enable(PWM_BASEADDR);
-         duty_cycle[0] = 0.7;
-         duty_cycle[1] = 0.7;
+         duty_cycle[0] = base_duty;
+         duty_cycle[1] = base_duty;
          getPosCorrection(pos_diff, duty_cycle);
       } else {
          PWM_Disable(PWM_BASEADDR);
@@ -136,6 +138,7 @@ void driveStraightPosControl() {
       }
       usleep(62500);
       pos_diff = getPositionDifference();
+      base_duty = (XGpio_DiscreteRead(xgpio1, SW_CHANNEL) >> 1) * 0.05 + 0.6;
    }
 }
 
@@ -228,8 +231,8 @@ void driveStraightPosControlDebug() {
    u16 m1_pos = Xil_In16(MSP_BASEADDR + M1_POS_OFFSET);
    u16 m2_pos = Xil_In16(MSP_BASEADDR + M2_POS_OFFSET);
    int16_t pos_diff = getPositionDifference();
-
-   double duty_cycle[2] = {0.6, 0.6};
+   int pos_diff_sum = pos_diff;
+   double duty_cycle[2] = {0.8, 0.8};
    int sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
    while (!sw0) {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
@@ -238,6 +241,7 @@ void driveStraightPosControlDebug() {
       data_arr[i].m1_pos = m1_pos;
       data_arr[i].m2_pos = m2_pos;
       data_arr[i].pos_diff = pos_diff;
+      data_arr[i].pos_diff_sum = pos_diff_sum;
       data_arr[i].m1_duty = duty_cycle[0];
       data_arr[i].m2_duty = duty_cycle[1];
 
@@ -246,8 +250,8 @@ void driveStraightPosControlDebug() {
 
       PWM_Enable(PWM_BASEADDR);
 
-      duty_cycle[0] = 0.6;
-      duty_cycle[1] = 0.6;
+      duty_cycle[0] = 0.8;
+      duty_cycle[1] = 0.8;
       getPosCorrection(pos_diff, duty_cycle);
 
       clearSpeedCounters();
@@ -256,6 +260,7 @@ void driveStraightPosControlDebug() {
       m1_pos = Xil_In16(MSP_BASEADDR + M1_POS_OFFSET);
       m2_pos = Xil_In16(MSP_BASEADDR + M2_POS_OFFSET);
       pos_diff = getPositionDifference();
+      pos_diff_sum += pos_diff;
    }
    PWM_Disable(PWM_BASEADDR);
    int sw3 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x8;
@@ -265,7 +270,7 @@ void driveStraightPosControlDebug() {
    for (int i = 0; i < 250; i++) {
       xil_printf("%3d   ", i);
       xil_printf("%4x %4x   ", data_arr[i].m1_pos, data_arr[i].m2_pos);
-      xil_printf("%3d   ", data_arr[i].pos_diff);
+      xil_printf("%3d %3d  ", data_arr[i].pos_diff, data_arr[i].pos_diff_sum);
       xil_printf("%2d %2d\n\r", (int) (data_arr[i].m1_duty * 100),
                                 (int) (data_arr[i].m2_duty * 100));
    }

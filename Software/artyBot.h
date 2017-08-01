@@ -18,6 +18,7 @@ typedef struct sample_data {
    u32 m1_pos;
    u32 m2_pos;
    int pos_diff;
+   int pos_diff_sum;
    double m1_duty;
    double m2_duty;
 } sample_data;
