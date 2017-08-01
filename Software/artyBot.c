@@ -118,7 +118,7 @@ void driveStraightPosControl() {
    int16_t pos_diff = getPositionDifference();
 
    int sw0 = 0;
-   double duty_cycle[2] = {0.5, 0.5};
+   double duty_cycle[2] = {0.7, 0.7};
    while (1) {
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
@@ -126,15 +126,15 @@ void driveStraightPosControl() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
       if (sw0) {
          PWM_Enable(PWM_BASEADDR);
-         duty_cycle[0] = 0.5;
-         duty_cycle[1] = 0.5;
+         duty_cycle[0] = 0.7;
+         duty_cycle[1] = 0.7;
          getPosCorrection(pos_diff, duty_cycle);
       } else {
          PWM_Disable(PWM_BASEADDR);
          clearPosCounter();
          resetErrors();
       }
-      usleep(40000);
+      usleep(62500);
       pos_diff = getPositionDifference();
    }
 }
@@ -229,7 +229,7 @@ void driveStraightPosControlDebug() {
    u16 m2_pos = Xil_In16(MSP_BASEADDR + M2_POS_OFFSET);
    int16_t pos_diff = getPositionDifference();
 
-   double duty_cycle[2] = {0.4, 0.4};
+   double duty_cycle[2] = {0.6, 0.6};
    int sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
    while (!sw0) {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
@@ -246,8 +246,8 @@ void driveStraightPosControlDebug() {
 
       PWM_Enable(PWM_BASEADDR);
 
-      duty_cycle[0] = 0.4;
-      duty_cycle[1] = 0.4;
+      duty_cycle[0] = 0.6;
+      duty_cycle[1] = 0.6;
       getPosCorrection(pos_diff, duty_cycle);
 
       clearSpeedCounters();
