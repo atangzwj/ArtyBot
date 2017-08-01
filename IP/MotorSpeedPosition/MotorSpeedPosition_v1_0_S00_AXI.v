@@ -422,6 +422,7 @@ module MotorSpeedPosition_v1_0_S00_AXI #
    assign slv_reg2 = {m2_pos1, m2_pos2};
    assign slv_reg3 = {16'b0, pos_diff};
    assign slv_reg4 = count_clk;
+   assign slv_reg5 = 32'b0;
 
    posManager pos_manager (
       .clk(S_AXI_ACLK),

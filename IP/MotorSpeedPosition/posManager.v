@@ -31,13 +31,22 @@ module posManager (
    input  wire [1:0]  clear
 );
 
+   reg m1_delay, m2_delay, m1_clean, m2_clean;
+
    initial begin
       count_clk = 32'b0;
+      m1_delay  =  1'b0;
+      m2_delay  =  1'b0;
+      m1_clean  =  1'b0;
+      m2_clean  =  1'b0;
    end
 
    always @ (posedge clk) begin
       if (clear[0]) count_clk <= 32'b0;
       else          count_clk <= count_clk + 1'b1;
+      
+      m1_clean <= m1;
+      m2_clean <= m2;
    end
 
    wire subtract;
@@ -55,7 +64,7 @@ module posManager (
       .clk(clk),
       .pos1(pos11),
       .pos2(pos12),
-      .sensor(m1),
+      .sensor(m1_clean),
       .clear(clear),
       .subtract(subtract),
       .distance(distance)
@@ -65,7 +74,7 @@ module posManager (
       .clk(clk),
       .pos1(pos21),
       .pos2(pos22),
-      .sensor(m2),
+      .sensor(m2_clean),
       .clear(clear),
       .subtract(subtract),
       .distance(distance)
