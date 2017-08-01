@@ -81,6 +81,10 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
       duty_cycle[0] /= 1.5;
    } else if (pos_diff < -3) {
       duty_cycle[1] /= 1.5;
+   } else if (err_sum_pos > 16) {
+      duty_cycle[0] /= 3;
+   } else if (err_sum_pos < -16) {
+      duty_cycle[1] /= 3;
    }
 
    // Bound duty cycles between 0 and 1
