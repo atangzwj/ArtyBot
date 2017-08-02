@@ -89,48 +89,6 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
    }
 }
 
-// Take position difference between motor1 and motor2 as int and a double array
-// to store new duty cycle for motor1, motor2, respectively
-// Assumes that this function gets called at regular time intervals
-/*void getPosCorrection(int pos_diff, double duty_cycle[]) {
-   err_sum_pos += pos_diff;
-
-   if (pos_diff > 16) {
-      duty_cycle[0] = 0;
-   } else if (pos_diff < -16) {
-      duty_cycle[1] = 0;
-   } else if (pos_diff > 10) {
-      duty_cycle[0] /= 3;
-   } else if (pos_diff < -10) {
-      duty_cycle[1] /= 3;
-   } else if (pos_diff > 6) {
-      duty_cycle[0] /= 2;
-   } else if (pos_diff < -6) {
-      duty_cycle[1] /= 2;
-   } else if (pos_diff > 3) {
-      duty_cycle[0] /= 1.5;
-   } else if (pos_diff < -3) {
-      duty_cycle[1] /= 1.5;
-   } else if (err_sum_pos > 16) {
-      duty_cycle[0] /= 3;
-   } else if (err_sum_pos < -16) {
-      duty_cycle[1] /= 3;
-   }
-
-   // Bound duty cycles between 0 and 1
-   if (duty_cycle[0] < 0) {
-      duty_cycle[0] = 0.0;
-   } else if (duty_cycle[0] > 1) {
-      duty_cycle[0] = 1.0;
-   }
-
-   if (duty_cycle[1] < 0) {
-      duty_cycle[1] = 0.0;
-   } else if (duty_cycle[1] > 1) {
-      duty_cycle[1] = 1.0;
-   }
-}*/
-
 // Reset accumulated error and previous error to 0
 void resetErrors() {
    err_sum_speed[0] = 0;
