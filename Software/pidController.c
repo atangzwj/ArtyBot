@@ -15,8 +15,9 @@
 #define K_PROP_SPEED 0.004
 #define K_INTG_SPEED 0.0005
 
-#define K_PROP_POS 0.005
-#define K_INTG_POS 0.0008
+#define K_PROP_POS 0.02
+#define K_INTG_POS 0.002
+#define K_DIFF_POS 0.003
 
 
 /************ Global Variables ************/
@@ -24,8 +25,8 @@
 int err_sum_speed[2]  = {0, 0};
 int err_prev_speed[2] = {0, 0};
 
-int err_sum_pos  = 0;
-int err_prev_pos = 0;
+int pos_diff_sum  = 0;
+int pos_diff_prev = 0;
 
 
 /************ Function Definitions ************/
@@ -40,10 +41,10 @@ void getSpeedCorrection(int speed_sp, int speed[], double duty_cycle[]) {
    err_sum_speed[0] += error_m1; // Accumulated error
    err_sum_speed[1] += error_m2;
 
-   duty_cycle[0] =   K_PROP_SPEED *  error_m1
-                   + K_INTG_SPEED *  err_sum_speed[0];
-   duty_cycle[1] =   K_PROP_SPEED *  error_m2
-                   + K_INTG_SPEED *  err_sum_speed[1];
+   duty_cycle[0] =   K_PROP_SPEED * error_m1
+                   + K_INTG_SPEED * err_sum_speed[0];
+   duty_cycle[1] =   K_PROP_SPEED * error_m2
+                   + K_INTG_SPEED * err_sum_speed[1];
 
    // Bound duty cycles between 0 and 1
    if (duty_cycle[0] < 0) {
@@ -60,13 +61,19 @@ void getSpeedCorrection(int speed_sp, int speed[], double duty_cycle[]) {
 }
 
 void getPosCorrection(int pos_diff, double duty_cycle[]) {
-   err_sum_pos += pos_diff;
+   pos_diff_sum += pos_diff;
 
-   duty_cycle[0] -=   K_PROP_POS * pos_diff
-                    + K_INTG_POS * err_sum_pos;
-   duty_cycle[1] +=   K_PROP_POS * pos_diff
-                    + K_INTG_POS * err_sum_pos;
+   double correction =   K_PROP_POS *  pos_diff
+                       + K_INTG_POS *  pos_diff_sum
+                       + K_DIFF_POS * (pos_diff - pos_diff_prev);
 
+   if (correction < 0) {
+      duty_cycle[0] -= correction;
+   } else {
+      duty_cycle[1] += correction;
+   }
+
+   pos_diff_prev = pos_diff;
 
    // Bound duty cycles between 0 and 1
    if (duty_cycle[0] < 0) {
@@ -132,6 +139,6 @@ void resetErrors() {
    err_prev_speed[0] = 0;
    err_prev_speed[1] = 0;
 
-   err_sum_pos  = 0;
-   err_prev_pos = 0;
+   pos_diff_sum  = 0;
+   pos_diff_prev = 0;
 }
