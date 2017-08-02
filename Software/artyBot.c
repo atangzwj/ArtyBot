@@ -136,7 +136,7 @@ void driveStraightPosControl() {
          clearPosCounter();
          resetErrors();
       }
-      usleep(62500);
+      usleep(80000);
       pos_diff = getPositionDifference();
       base_duty = (XGpio_DiscreteRead(xgpio1, SW_CHANNEL) >> 1) * 0.05 + 0.6;
    }
