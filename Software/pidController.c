@@ -15,9 +15,9 @@
 #define K_PROP_SPEED 0.004
 #define K_INTG_SPEED 0.0005
 
-#define K_PROP_POS 0.02
-#define K_INTG_POS 0.002
-#define K_DIFF_POS 0.003
+#define K_PROP_POS 0.014
+#define K_INTG_POS 0.0008
+#define K_DIFF_POS 0.0016
 
 
 /************ Global Variables ************/
@@ -60,6 +60,9 @@ void getSpeedCorrection(int speed_sp, int speed[], double duty_cycle[]) {
    }
 }
 
+// Take position difference between motor1 and motor2 as an int and an array of
+// doubles to store corrected duty cycles for motor1, motor2, respectively
+// Assumes that this function gets called at regular time intervals
 void getPosCorrection(int pos_diff, double duty_cycle[]) {
    pos_diff_sum += pos_diff;
 
@@ -68,9 +71,9 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
                        + K_DIFF_POS * (pos_diff - pos_diff_prev);
 
    if (correction < 0) {
-      duty_cycle[0] -= correction;
+      duty_cycle[0] -= correction; // Motor1 lagging, speed up motor1
    } else {
-      duty_cycle[1] += correction;
+      duty_cycle[1] += correction; // Motor2 lagging, speed up motor2
    }
 
    pos_diff_prev = pos_diff;
