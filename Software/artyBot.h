@@ -13,8 +13,6 @@
 #include "xil_types.h"
 
 typedef struct sample_data {
-//   int m1_speed;
-//   int m2_speed;
    u32 m1_pos;
    u32 m2_pos;
    int pos_diff;
@@ -30,13 +28,7 @@ void motorSwitch();
 
 void displaySpeed();
 
-void driveStraightSpeedControl();
-
-void driveStraightPosControl();
-
-void driveStraightSpeedPosControl();
-
-void sensorDebug();
+void driveStraight();
 
 void driveStraightPosControlDebug();
 

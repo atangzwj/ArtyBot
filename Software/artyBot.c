@@ -18,6 +18,11 @@
 #include "PWM.h"
 
 
+/************ Macro Definitions ************/
+
+#define BASE_DUTY_CYCLE 0.8
+
+
 /************ Function Definitions ************/
 
 // Turns both motors on at half speed when SW0 is toggled on (milestone 2)
@@ -73,41 +78,8 @@ void displaySpeed() {
    }
 }
 
-// Drives bot forward with speed control system when SW0 is on (milestone 4)
-void driveStraightSpeedControl() {
-   PWM_Set_Period(PWM_BASEADDR, PWM_PER);
-
-   PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
-
-   MOTOR1_FORWARD;  // Set motor directions to forward
-   MOTOR2_FORWARD;
-
-   int speed_sp = (XGpio_DiscreteRead(xgpio1, SW_CHANNEL) >> 1) * 10 + 30;
-
-   int motor_speed[2];
-   measureSpeed(motor_speed);
-   int sw0 = 0;
-   double duty_cycle[2] = {0.4, 0.4};
-   while (1) {
-      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
-      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
-
-      sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
-      if (sw0) {
-         PWM_Enable(PWM_BASEADDR);
-         getSpeedCorrection(speed_sp, motor_speed, duty_cycle);
-      } else {
-         PWM_Disable(PWM_BASEADDR);
-         resetErrors();
-      }
-      clearSpeedCounters();
-      usleep(40000);
-      measureSpeed(motor_speed);
-      speed_sp = (XGpio_DiscreteRead(xgpio1, SW_CHANNEL) >> 1) * 10 + 30;
-   }
-}
-
-void driveStraightPosControl() {
+// Drives the bot forward when SW0 on using positional control (milestone 4)
+void driveStraight() {
    PWM_Set_Period(PWM_BASEADDR, PWM_PER);
 
    PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
@@ -115,12 +87,10 @@ void driveStraightPosControl() {
    MOTOR1_FORWARD; // Set motor directions to forward
    MOTOR2_FORWARD;
 
-   double base_duty = (XGpio_DiscreteRead(xgpio1, SW_CHANNEL) >> 1) * 0.05 + 0.6;
-
    int16_t pos_diff = getPositionDifference();
 
    int sw0 = 0;
-   double duty_cycle[2] = {base_duty, base_duty};
+   double duty_cycle[2] = {BASE_DUTY_CYCLE, BASE_DUTY_CYCLE};
    while (1) {
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
@@ -128,55 +98,16 @@ void driveStraightPosControl() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
       if (sw0) {
          PWM_Enable(PWM_BASEADDR);
-         duty_cycle[0] = base_duty;
-         duty_cycle[1] = base_duty;
+         duty_cycle[0] = BASE_DUTY_CYCLE;
+         duty_cycle[1] = BASE_DUTY_CYCLE;
          getPosCorrection(pos_diff, duty_cycle);
       } else {
          PWM_Disable(PWM_BASEADDR);
          clearPosCounter();
          resetErrors();
       }
-      usleep(80000);
+      usleep(25000); // 40 Hz sampling frequency
       pos_diff = getPositionDifference();
-      base_duty = (XGpio_DiscreteRead(xgpio1, SW_CHANNEL) >> 1) * 0.05 + 0.6;
-   }
-}
-
-void driveStraightSpeedPosControl() {
-   PWM_Set_Period(PWM_BASEADDR, PWM_PER);
-
-   PWM_Disable(PWM_BASEADDR); // Disable PWM before changing motor directions
-
-   MOTOR1_FORWARD; // Set motor directions to forward
-   MOTOR2_FORWARD;
-
-   int speed_sp = (XGpio_DiscreteRead(xgpio1, SW_CHANNEL) >> 1) * 10 + 30;
-
-   int motor_speed[2];
-   measureSpeed(motor_speed);
-
-   int16_t pos_diff = getPositionDifference();
-
-   int sw0 = 0;
-   double duty_cycle[2] = {0.5, 0.5};
-   while (1) {
-      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
-      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
-
-      sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
-      if (sw0) {
-         PWM_Enable(PWM_BASEADDR);
-         getSpeedCorrection(speed_sp, motor_speed, duty_cycle);
-         getPosCorrection(pos_diff, duty_cycle);
-      } else {
-         PWM_Disable(PWM_BASEADDR);
-         clearPosCounter();
-         resetErrors();
-      }
-      usleep(40000);
-      measureSpeed(motor_speed);
-      pos_diff = getPositionDifference();
-      speed_sp = (XGpio_DiscreteRead(xgpio1, SW_CHANNEL) >> 1) * 10 + 30;
    }
 }
 
@@ -197,7 +128,7 @@ void driveStraightPosControlDebug() {
    u16 m2_pos = Xil_In16(MSP_BASEADDR + M2_POS_OFFSET);
    int16_t pos_diff = getPositionDifference();
    int pos_diff_sum = pos_diff;
-   double duty_cycle[2] = {0.6, 0.6};
+   double duty_cycle[2] = {BASE_DUTY_CYCLE, BASE_DUTY_CYCLE};
    int sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
    while (!sw0) {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
@@ -215,8 +146,8 @@ void driveStraightPosControlDebug() {
 
       PWM_Enable(PWM_BASEADDR);
 
-      duty_cycle[0] = 0.6;
-      duty_cycle[1] = 0.6;
+      duty_cycle[0] = BASE_DUTY_CYCLE;
+      duty_cycle[1] = BASE_DUTY_CYCLE;
       getPosCorrection(pos_diff, duty_cycle);
 
       clearSpeedCounters();
