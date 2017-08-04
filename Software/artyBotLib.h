@@ -8,8 +8,22 @@
 #ifndef SRC_ARTYBOTLIB_H_
 #define SRC_ARTYBOTLIB_H_
 
+/************ Function Prototypes ************/
+
+void artyBotInit();
+
 void setDirForward();
 
-void forward();
+void setDirBackward();
+
+void setDirLeft();
+
+void setDirRight();
+
+void drive();
+
+void turn();
+
+void stop();
 
 #endif /* SRC_ARTYBOTLIB_H_ */

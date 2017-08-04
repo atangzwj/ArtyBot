@@ -10,6 +10,7 @@
 /************ Include Files ************/
 
 #include "artyBot.h"
+#include "artyBotLib.h"
 #include "motorControl.h"
 #include "platform.h"
 
@@ -20,8 +21,10 @@ int main() {
    init_platform();
 
    initIO();
-   clearPosCounter();
-   driveStraight();
+
+   artyBotInit();
+   setDirForward();
+   drive();
 
    cleanup_platform();
    return 0;
