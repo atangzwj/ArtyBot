@@ -12,53 +12,18 @@
 
 /************ Macro Definitions ************/
 
-#define K_PROP_SPEED 0.004
-#define K_INTG_SPEED 0.0005
-
 #define K_PROP_POS 0.014
-#define K_INTG_POS 0.0008
-#define K_DIFF_POS 0.0016
+#define K_INTG_POS 0.0012
+#define K_DIFF_POS 0.0014
 
 
 /************ Global Variables ************/
 
-int err_sum_speed[2]  = {0, 0};
-int err_prev_speed[2] = {0, 0};
-
-int pos_diff_sum  = 0;
-int pos_diff_prev = 0;
+static int pos_diff_sum  = 0;
+static int pos_diff_prev = 0;
 
 
 /************ Function Definitions ************/
-
-// Takes an int array containing current speeds for motor1, motor2, respectively
-// Takes a double array to store new duty cycle for motor1, motor2, respectively
-// Assumes that this function gets called at regular time intervals
-void getSpeedCorrection(int speed_sp, int speed[], double duty_cycle[]) {
-   int error_m1 = speed_sp - speed[0]; // Current error
-   int error_m2 = speed_sp - speed[1];
-
-   err_sum_speed[0] += error_m1; // Accumulated error
-   err_sum_speed[1] += error_m2;
-
-   duty_cycle[0] =   K_PROP_SPEED * error_m1
-                   + K_INTG_SPEED * err_sum_speed[0];
-   duty_cycle[1] =   K_PROP_SPEED * error_m2
-                   + K_INTG_SPEED * err_sum_speed[1];
-
-   // Bound duty cycles between 0 and 1
-   if (duty_cycle[0] < 0) {
-      duty_cycle[0] = 0.0;
-   } else if (duty_cycle[0] > 1) {
-      duty_cycle[0] = 1.0;
-   }
-
-   if (duty_cycle[1] < 0) {
-      duty_cycle[1] = 0.0;
-   } else if (duty_cycle[1] > 1) {
-      duty_cycle[1] = 1.0;
-   }
-}
 
 // Take position difference between motor1 and motor2 as an int and an array of
 // doubles to store corrected duty cycles for motor1, motor2, respectively
@@ -94,12 +59,6 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
 
 // Reset accumulated error and previous error to 0
 void resetErrors() {
-   err_sum_speed[0] = 0;
-   err_sum_speed[1] = 0;
-
-   err_prev_speed[0] = 0;
-   err_prev_speed[1] = 0;
-
    pos_diff_sum  = 0;
    pos_diff_prev = 0;
 }
