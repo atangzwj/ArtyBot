@@ -72,6 +72,14 @@ void clearSpeedCounters() {
 int16_t getPositionDifference() {
    return (int16_t) Xil_In16(MSP_BASEADDR + POS_DIFF_OFFSET);
 }
+
+// Return distance traveled by motor1 or motor2, whichever is greater
+int16_t getDistanceTraveled() {
+   int16_t m1_distance = (int16_t) Xil_In16(MSP_BASEADDR + M1_POS_OFFSET);
+   int16_t m2_distance = (int16_t) Xil_In16(MSP_BASEADDR + M2_POS_OFFSET);
+   return m1_distance > m2_distance ? m1_distance : m2_distance;
+}
+
  // Clear the cumulative position counters for both motors
 void clearPosCounter() {
    Xil_Out8(MSP_BASEADDR + CLEAR_OFFSET, 0x2);

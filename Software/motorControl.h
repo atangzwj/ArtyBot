@@ -64,6 +64,8 @@ void clearSpeedCounters();
 
 int16_t getPositionDifference();
 
+int16_t getDistanceTraveled();
+
 void clearPosCounter();
 
 #endif /* SRC_MOTORCONTROL_H_ */
