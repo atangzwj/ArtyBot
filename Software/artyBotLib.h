@@ -8,6 +8,9 @@
 #ifndef SRC_ARTYBOTLIB_H_
 #define SRC_ARTYBOTLIB_H_
 
+/************ Include Files ************/
+#include <stdint.h>
+
 /************ Function Prototypes ************/
 
 void artyBotInit();
@@ -20,9 +23,7 @@ void setDirLeft();
 
 void setDirRight();
 
-void drive();
-
-void turn();
+void drive(int16_t target_distance);
 
 void stop();
 

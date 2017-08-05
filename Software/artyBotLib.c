@@ -51,26 +51,25 @@ void setDirRight() {
    MOTOR2_BACKWARD;
 }
 
-void drive() {
+void drive(int16_t target_distance) {
    int16_t pos_diff = getPositionDifference();
    double duty_cycle[2];
    getPosCorrection(pos_diff, duty_cycle);
+
+   int16_t distance_traveled = getDistanceTraveled();
 
    PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
    PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
    PWM_Enable(PWM_BASEADDR);
 
-   while (1) {
+   while (distance_traveled < target_distance) {
       usleep(SAMPLE_PER);
       pos_diff = getPositionDifference();
       getPosCorrection(pos_diff, duty_cycle);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
+      distance_traveled = getDistanceTraveled();
    }
-}
-
-void turn() {
-
 }
 
 void stop() {
