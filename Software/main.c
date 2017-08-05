@@ -14,17 +14,30 @@
 #include "motorControl.h"
 #include "platform.h"
 
-
+#include "microblaze_sleep.h"
 /************ Function Definitions ************/
 
 int main() {
    init_platform();
 
    initIO();
-
    artyBotInit();
+
+   int sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
+   while (!sw0) {
+      sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
+   }
+
    setDirForward();
-   drive();
+   drive(48 * 4 * 6);
+
+   stop();
+   usleep(100);
+
+   setDirBackward();
+   drive(48 * 4 * 6);
+
+   stop();
 
    cleanup_platform();
    return 0;
