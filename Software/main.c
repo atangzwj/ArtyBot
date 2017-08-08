@@ -31,13 +31,13 @@ int main() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
    }
 
-   driveForward(50);
-   turnRight(180);
-   driveForward(50);
-
-   driveBackward(50);
+   driveForward(100);
+   turnRight(90);
+   driveForward(100);
    turnLeft(180);
-   driveBackward(50);
+   driveForward(100);
+   turnRight(90);
+   driveBackward(100);
 
    cleanup_platform();
    return 0;
