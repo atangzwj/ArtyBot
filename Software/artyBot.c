@@ -84,7 +84,7 @@ void driveStraight() {
    int16_t pos_diff = getPositionDifference();
 
    int sw0 = 0;
-   double duty_cycle[2];
+   double duty_cycle[2] = {0, 0};
    while (1) {
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
