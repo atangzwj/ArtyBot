@@ -9,22 +9,20 @@
 #define SRC_ARTYBOTLIB_H_
 
 /************ Include Files ************/
+
 #include <stdint.h>
+
 
 /************ Function Prototypes ************/
 
 void artyBotInit();
 
-void setDirForward();
+void driveForward(double distance);
 
-void setDirBackward();
+void driveBackward(double distance);
 
-void setDirLeft();
+void turnLeft(int degrees);
 
-void setDirRight();
-
-void drive(int16_t target_distance);
-
-void stop();
+void turnRight(int degrees);
 
 #endif /* SRC_ARTYBOTLIB_H_ */
