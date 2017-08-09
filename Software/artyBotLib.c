@@ -30,7 +30,7 @@ void setDirLeft();
 
 void setDirRight();
 
-void drive(double distance);
+void drive(double distance, int is_turning);
 
 void turn(double arclength);
 
@@ -48,14 +48,14 @@ void artyBotInit() {
 // Drive bot forward by given distance (in cm)
 void driveForward(double distance) {
    setDirForward();
-   drive(distance);
+   drive(distance, 0);
    PWM_Disable(PWM_BASEADDR);
 }
 
 // Drive bot backward by given distance (in cm)
 void driveBackward(double distance) {
    setDirBackward();
-   drive(distance);
+   drive(distance, 0);
    PWM_Disable(PWM_BASEADDR);
 }
 
@@ -63,7 +63,7 @@ void driveBackward(double distance) {
 void turnLeft(int degrees) {
    double arclength = (double) FULL_TURN_ARCLENGTH * (degrees / 360.0);
    setDirLeft();
-   drive(arclength);
+   drive(arclength, 1);
    PWM_Disable(PWM_BASEADDR);
 }
 
@@ -71,7 +71,7 @@ void turnLeft(int degrees) {
 void turnRight(int degrees) {
    double arclength = (double) FULL_TURN_ARCLENGTH * (degrees / 360.0);
    setDirRight();
-   drive(arclength);
+   drive(arclength, 1);
    PWM_Disable(PWM_BASEADDR);
 }
 
@@ -107,8 +107,9 @@ void setDirRight() {
    clearPosCounter();
 }
 
-// Turn on motors until wheels travel given distance (in cm)
-void drive(double distance) {
+
+
+void drive(double distance, int is_turning) {
    int16_t distance_converted = (int16_t) (distance * 9.4); // cm to sens edges
    int16_t pos_diff = getPositionDifference();
    double duty_cycle[2] = {0, 0};
@@ -124,11 +125,52 @@ void drive(double distance) {
       usleep(SAMPLE_PER);
       pos_diff = getPositionDifference();
       getPosCorrection(pos_diff, duty_cycle);
+      distance_traveled = getDistanceTraveled();
+      if (is_turning) {
+         double progress = ((double) distance_traveled) / distance_converted;
+         if (progress > 0.9) {
+            duty_cycle[0] *= 0.6;
+            duty_cycle[1] *= 0.6;
+         } else if (progress > 0.8) {
+            duty_cycle[0] *= 0.75;
+            duty_cycle[1] *= 0.75;
+         } else if (progress > 0.7) {
+            duty_cycle[0] *= 0.9;
+            duty_cycle[1] *= 0.9;
+         }
+         int16_t m1_dist = Xil_In16(MSP_BASEADDR + M1_POS_OFFSET);
+         int16_t m2_dist = Xil_In16(MSP_BASEADDR + M2_POS_OFFSET);
+         xil_printf("%d  %d\r", (int) m1_dist, (int) m2_dist);
+      }
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
-      distance_traveled = getDistanceTraveled();
    }
+   usleep(1000);
 }
+
+
+// Turn on motors until wheels travel given distance (in cm)
+//void drive(double distance) {
+//   int16_t distance_converted = (int16_t) (distance * 9.4); // cm to sens edges
+//   int16_t pos_diff = getPositionDifference();
+//   double duty_cycle[2] = {0, 0};
+//   getPosCorrection(pos_diff, duty_cycle);
+//
+//   int16_t distance_traveled = getDistanceTraveled();
+//
+//   PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
+//   PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
+//   PWM_Enable(PWM_BASEADDR);
+//
+//   while (distance_traveled < distance_converted) {
+//      usleep(SAMPLE_PER);
+//      pos_diff = getPositionDifference();
+//      getPosCorrection(pos_diff, duty_cycle);
+//      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
+//      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
+//      distance_traveled = getDistanceTraveled();
+//   }
+//}
 
 void turn(double arclength) {
    int16_t distance_converted = (int16_t) (arclength * 9.4); // cm to sens edges
