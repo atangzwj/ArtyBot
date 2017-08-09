@@ -91,8 +91,8 @@ void driveStraight() {
 
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
       if (sw0) {
-         PWM_Enable(PWM_BASEADDR);
          getPosCorrection(pos_diff, duty_cycle);
+         PWM_Enable(PWM_BASEADDR);
       } else {
          PWM_Disable(PWM_BASEADDR);
          clearPosCounter();
