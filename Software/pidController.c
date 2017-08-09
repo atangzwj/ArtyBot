@@ -16,7 +16,7 @@
 #define K_INTG_POS 0.0012
 #define K_DIFF_POS 0.0014
 
-#define BASE_DUTY_CYCLE 0.8
+#define BASE_DUTY_CYCLE 0.6
 
 
 /************ Global Variables ************/
@@ -37,12 +37,12 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
                        + K_INTG_POS *  pos_diff_sum
                        + K_DIFF_POS * (pos_diff - pos_diff_prev);
 
+   duty_cycle[0] = BASE_DUTY_CYCLE;
+   duty_cycle[1] = BASE_DUTY_CYCLE;
    if (correction < 0) {
-      duty_cycle[0] = BASE_DUTY_CYCLE - correction; // Motor1 lagging, speed up
-      duty_cycle[1] = BASE_DUTY_CYCLE;
+      duty_cycle[0] -= correction; // Motor1 lagging, speed up
    } else {
-      duty_cycle[0] = BASE_DUTY_CYCLE;
-      duty_cycle[1] = BASE_DUTY_CYCLE + correction; // Motor2 lagging, speed up
+      duty_cycle[1] += correction; // Motor2 lagging, speed up
    }
 
    pos_diff_prev = pos_diff;
