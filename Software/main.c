@@ -30,13 +30,16 @@ int main() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
    }
 
-   driveForward(100);
-   turnRight(90);
-   driveForward(100);
-   turnLeft(180);
-   driveForward(100);
-   turnRight(90);
-   driveBackward(100);
+   for (int i = 0; i < 4; i++) {
+      turnRight(90);
+   }
+
+//   driveForward(50);
+//   turnRight(90);
+//   driveForward(50);
+//   turnLeft(45);
+//   driveBackward(50 * 1.414);
+//   turnLeft(45);
 
    cleanup_platform();
    return 0;
