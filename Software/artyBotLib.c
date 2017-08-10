@@ -123,35 +123,32 @@ void drive(double distance, int is_turning) {
       usleep(SAMPLE_PER);
       pos_diff = getPositionDifference();
       getPosCorrection(pos_diff, duty_cycle);
-      distance_traveled = getDistanceTraveled();
       if (is_turning) {
-         duty_cycle[0] *= 0.84;
-         duty_cycle[1] *= 0.84;
+//         duty_cycle[0] *= 0.84;
+//         duty_cycle[1] *= 0.84;
 
 
-//         double progress = ((double) distance_traveled) / distance_converted;
-//         int motor_speed[2];
-//         measureSpeed(motor_speed);
+         double progress = ((double) distance_traveled) / distance_converted;
+         int motor_speed[2];
+         measureSpeed(motor_speed);
 
-//         int slow_down = 0;
-//         if (!slow_down && progress > 0.7) {
-//            slow_down = motor_speed[0] > 60 || motor_speed[1] > 60;
-//         }
-//
-//         if (slow_down) {
-//            double speed_coeff = (motor_speed[0] - 20) * 0.01;
-//            duty_cycle[0] *= speed_coeff;
-//            duty_cycle[1] *= speed_coeff;
-//         }
-//         if (progress > 0.9) {
+         int slow_down = 0;
+         if (!slow_down && progress > 0.7) {
+            slow_down = motor_speed[0] > 60 || motor_speed[1] > 60;
+         }
+
+         if (slow_down) {
+            double speed_coeff = (motor_speed[0] - 20) * 0.01;
+            duty_cycle[0] *= speed_coeff;
+            duty_cycle[1] *= speed_coeff;
+         }
+
+//         if (progress > 0.7) {
 //            duty_cycle[0] *= 0.6;
 //            duty_cycle[1] *= 0.6;
-//         } else if (progress > 0.8) {
+//         } else if (progress > 0.6) {
 //            duty_cycle[0] *= 0.7;
 //            duty_cycle[1] *= 0.7;
-//         } else if (progress > 0.7) {
-//            duty_cycle[0] *= 0.85;
-//            duty_cycle[1] *= 0.85;
 //         }
 //         int16_t m1_dist = Xil_In16(MSP_BASEADDR + M1_POS_OFFSET);
 //         int16_t m2_dist = Xil_In16(MSP_BASEADDR + M2_POS_OFFSET);
@@ -159,6 +156,7 @@ void drive(double distance, int is_turning) {
       }
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
+      distance_traveled = getDistanceTraveled();
    }
    PWM_Disable(PWM_BASEADDR);
 
