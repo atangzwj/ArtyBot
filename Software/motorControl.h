@@ -62,6 +62,8 @@ void getEdgeCounts(int m1[], int m2[]);
 
 void clearSpeedCounters();
 
+void getMotorPositions(int16_t motor_pos[]);
+
 int16_t getPositionDifference();
 
 int16_t getDistanceTraveled();

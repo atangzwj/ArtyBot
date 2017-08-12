@@ -8,11 +8,6 @@
 #ifndef SRC_ARTYBOTLIB_H_
 #define SRC_ARTYBOTLIB_H_
 
-/************ Include Files ************/
-
-#include <stdint.h>
-
-
 /************ Function Prototypes ************/
 
 void artyBotInit();
