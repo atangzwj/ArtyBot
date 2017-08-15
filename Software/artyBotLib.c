@@ -32,6 +32,8 @@ void setDirRight();
 
 void drive(double distance);
 
+void pivotTurn(double arclength, int dir);
+
 void turn(double arclength);
 
 void delayUntilStop();
@@ -64,6 +66,10 @@ void turnLeft(int degrees) {
    double arclength = (double) FULL_TURN_ARCLENGTH * (degrees / 360.0);
    setDirLeft();
    turn(arclength);
+
+//   double arclength = 2.0 * FULL_TURN_ARCLENGTH * (degrees / 360.0);
+//   setDirLeft();
+//   pivotTurn(arclength, 0);
 }
 
 // Turn bot to the right by given number of degrees from forward
@@ -71,6 +77,10 @@ void turnRight(int degrees) {
    double arclength = (double) FULL_TURN_ARCLENGTH * (degrees / 360.0);
    setDirRight();
    turn(arclength);
+
+//   double arclength = 2.0 * FULL_TURN_ARCLENGTH * (degrees / 360.0);
+//   setDirRight();
+//   pivotTurn(arclength, 1);
 }
 
 void setDirForward() {
@@ -79,6 +89,7 @@ void setDirForward() {
    MOTOR1_FORWARD;
    MOTOR2_FORWARD;
    clearPosCounter();
+   resetErrors();
 }
 
 void setDirBackward() {
@@ -87,6 +98,7 @@ void setDirBackward() {
    MOTOR1_BACKWARD;
    MOTOR2_BACKWARD;
    clearPosCounter();
+   resetErrors();
 }
 
 void setDirLeft() {
@@ -95,6 +107,8 @@ void setDirLeft() {
    MOTOR1_BACKWARD;
    MOTOR2_FORWARD;
    clearPosCounter();
+   clearSpeedCounters();
+   resetErrors();
 }
 
 void setDirRight() {
@@ -103,6 +117,8 @@ void setDirRight() {
    MOTOR1_FORWARD;
    MOTOR2_BACKWARD;
    clearPosCounter();
+   clearSpeedCounters();
+   resetErrors();
 }
 
 void drive(double distance) {
@@ -129,6 +145,37 @@ void drive(double distance) {
    delayUntilStop();
 }
 
+void pivotTurn(double arclength, int dir) {
+   int16_t dist_converted = (int16_t) (arclength * 9.4); // cm to sens edges
+
+   int motor_speed[2];
+   measureSpeed(motor_speed);
+
+   int16_t motor_pos[2];
+   getMotorPositions(motor_pos);
+
+   double duty_cycle[2];
+   getSpeedCorrection(40, motor_speed, duty_cycle);
+
+   PWM_Enable(PWM_BASEADDR);
+
+   while (motor_pos[0] < dist_converted && motor_pos[1] < dist_converted) {
+      usleep(SAMPLE_PER);
+      measureSpeed(motor_speed);
+      getSpeedCorrection(40, motor_speed, duty_cycle);
+      if (dir) {
+         PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
+         PWM_Set_Duty(PWM_BASEADDR, (u32) 0, PWM_M2);
+      } else {
+         PWM_Set_Duty(PWM_BASEADDR, (u32) 0, PWM_M1);
+         PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
+      }
+      getMotorPositions(motor_pos);
+   }
+   PWM_Disable(PWM_BASEADDR);
+   delayUntilStop();
+}
+
 void turn(double arclength) {
    int16_t dist_converted = (int16_t) (arclength * 9.4); // cm to sens edges
 
@@ -141,23 +188,23 @@ void turn(double arclength) {
    double duty_cycle[2];
    getSpeedCorrection(40, motor_speed, duty_cycle);
 
-   PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
-   PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
    PWM_Enable(PWM_BASEADDR);
 
    while (motor_pos[0] < dist_converted || motor_pos[1] < dist_converted) {
       usleep(SAMPLE_PER);
-      getMotorPositions(motor_pos);
       measureSpeed(motor_speed);
       getSpeedCorrection(40, motor_speed, duty_cycle);
-      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
-      PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
       if (motor_pos[0] >= dist_converted) {
          PWM_Set_Duty(PWM_BASEADDR, (u32) 0, PWM_M1);
+      } else {
+         PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
       }
       if (motor_pos[1] >= dist_converted) {
          PWM_Set_Duty(PWM_BASEADDR, (u32) 0, PWM_M2);
+      } else {
+         PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
       }
+      getMotorPositions(motor_pos);
    }
    PWM_Disable(PWM_BASEADDR);
    delayUntilStop();
