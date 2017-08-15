@@ -30,38 +30,12 @@ int main() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
    }
 
-//   int16_t motor_pos[2];
-//   getMotorPositions(motor_pos);
-//   while (1) {
-//      xil_printf("%3d %3d\r", motor_pos[0], motor_pos[1]);
-//      getMotorPositions(motor_pos);
-//   }
-
-
-//   turnRight(180);
-//   while (sw0) {
-//      sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
-//   }
-//   while (!sw0) {
-//      sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
-//   }
-//   turnLeft(180);
-
-//   driveForward(50);
-//   turnRight(180);
-//   driveForward(50);
-//   turnRight(180);
-
-   driveForward(48);
-   turnRight(90);
-   driveForward(48);
-   turnLeft(45);
-   driveBackward(48 * 1.414);
-   turnLeft(45);
-
-
-//   driveBackward(72 * 1.414);
-//   turnLeft(45);
+   driveForward(72);
+   swingTurnRight(90);
+   driveForward(72);
+   swingTurnLeft(45);
+   driveBackward(72 * 1.414);
+   swingTurnLeft(45);
 
    cleanup_platform();
    return 0;

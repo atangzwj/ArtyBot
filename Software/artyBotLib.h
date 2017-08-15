@@ -20,4 +20,8 @@ void turnLeft(int degrees);
 
 void turnRight(int degrees);
 
+void swingTurnLeft(int degrees);
+
+void swingTurnRight(int degrees);
+
 #endif /* SRC_ARTYBOTLIB_H_ */
