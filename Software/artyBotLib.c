@@ -62,26 +62,28 @@ void driveBackward(double distance) {
    drive(distance);
 }
 
-// Turn bot to the left by given number of degrees from forward
+// Turn bot left about the center by given number of degrees from forward
 void turnLeft(int degrees) {
-   double arclength = (double) FULL_TURN_ARCLENGTH * (degrees / 360.0);
+   double arclength = FULL_TURN_ARCLENGTH * (degrees / 360.0);
    setDirLeft();
    turn(arclength);
 }
 
-// Turn bot to the right by given number of degrees from forward
+// Turn bot right about the center by given number of degrees from forward
 void turnRight(int degrees) {
-   double arclength = (double) FULL_TURN_ARCLENGTH * (degrees / 360.0);
+   double arclength = FULL_TURN_ARCLENGTH * (degrees / 360.0);
    setDirRight();
    turn(arclength);
 }
 
+// Turn bot about left wheel by given number of degrees from forward
 void swingTurnLeft(int degrees) {
    double arclength = FULL_SWING_TURN_ARCLENGTH * (degrees / 360.0);
    setDirLeft();
    swingTurn(arclength, 0);
 }
 
+// Turn bot about right wheel by given number of degrees from forward
 void swingTurnRight(int degrees) {
    double arclength = FULL_SWING_TURN_ARCLENGTH * (degrees / 360.0);
    setDirRight();
@@ -183,6 +185,7 @@ void turn(double arclength) {
    PWM_Disable(PWM_BASEADDR);
    delayUntilStop();
 }
+
 void swingTurn(double arclength, int dir) {
    int16_t dist_converted = (int16_t) (arclength * 9.4); // cm to sens edges
 
