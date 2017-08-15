@@ -101,4 +101,10 @@ void getSpeedCorrection(int speed_sp, int speed[], double duty_cycle[]) {
 void resetErrors() {
    pos_diff_sum  = 0;
    pos_diff_prev = 0;
+
+   err_sum_speed[0] = 0;
+   err_sum_speed[1] = 0;
+
+   err_prev_speed[0] = 0;
+   err_prev_speed[1] = 0;
 }
