@@ -162,14 +162,20 @@ void turn(double arclength) {
    getMotorPositions(motor_pos);
 
    double duty_cycle[2];
+   int speed = 40;
    getSpeedCorrection(40, motor_speed, duty_cycle);
 
    PWM_Enable(PWM_BASEADDR);
 
    while (motor_pos[0] < dist_converted || motor_pos[1] < dist_converted) {
+      int16_t dist_to_targ = dist_converted - (motor_pos[0] + motor_pos[1]) / 2;
+      speed = 40;
+      if (dist_to_targ < 50) {
+         speed = 25 + 0.3 * dist_to_targ;
+      }
       usleep(SAMPLE_PER);
       measureSpeed(motor_speed);
-      getSpeedCorrection(40, motor_speed, duty_cycle);
+      getSpeedCorrection(speed, motor_speed, duty_cycle);
       if (motor_pos[0] >= dist_converted) {
          PWM_Set_Duty(PWM_BASEADDR, (u32) 0, PWM_M1);
       } else {

@@ -15,6 +15,11 @@
 #include "platform.h"
 
 
+/************ Function Prototypes ************/
+
+void drawPolygon(int n, int sideLength);
+
+
 /************ Function Definitions ************/
 
 int main() {
@@ -31,12 +36,21 @@ int main() {
    }
 
    driveForward(72);
-   swingTurnRight(90);
+   turnRight(90);
    driveForward(72);
-   swingTurnLeft(45);
-   driveBackward(72 * 1.414);
-   swingTurnLeft(45);
+   turnLeft(180);
+   driveForward(72);
+   turnRight(90);
+   driveBackward(72);
 
    cleanup_platform();
    return 0;
+}
+
+// Drive the bot to trace an n-sided regular polygon with given side length
+void drawPolygon(int n, int sideLength) {
+   for (int i = 0; i < n; i++) {
+      driveForward(sideLength);
+      turnRight(360 / n);
+   }
 }
