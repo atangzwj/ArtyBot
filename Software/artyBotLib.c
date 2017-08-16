@@ -10,6 +10,7 @@
 #include "artyBotLib.h"
 #include "microblaze_sleep.h"
 #include "motorControl.h"
+#include "MotorSpeedPosition.h"
 #include "pidController.h"
 #include "PWM.h"
 
@@ -44,8 +45,8 @@ void delayUntilStop();
 
 void artyBotInit() {
    initIO();
-   clearPosCounter();
-   clearSpeedCounters();
+   clearPosCounter(MSP_BASEADDR);
+   clearSpeedCounters(MSP_BASEADDR);
    PWM_Set_Period(PWM_BASEADDR, PWM_PER);
    PWM_Disable(PWM_BASEADDR);
 }
@@ -95,7 +96,7 @@ void setDirForward() {
    usleep(500);
    MOTOR1_FORWARD;
    MOTOR2_FORWARD;
-   clearPosCounter();
+   clearPosCounter(MSP_BASEADDR);
    resetErrors();
 }
 
@@ -104,7 +105,7 @@ void setDirBackward() {
    usleep(500);
    MOTOR1_BACKWARD;
    MOTOR2_BACKWARD;
-   clearPosCounter();
+   clearPosCounter(MSP_BASEADDR);
    resetErrors();
 }
 
@@ -113,8 +114,8 @@ void setDirLeft() {
    usleep(500);
    MOTOR1_BACKWARD;
    MOTOR2_FORWARD;
-   clearPosCounter();
-   clearSpeedCounters();
+   clearPosCounter(MSP_BASEADDR);
+   clearSpeedCounters(MSP_BASEADDR);
    resetErrors();
 }
 
@@ -123,14 +124,14 @@ void setDirRight() {
    usleep(500);
    MOTOR1_FORWARD;
    MOTOR2_BACKWARD;
-   clearPosCounter();
-   clearSpeedCounters();
+   clearPosCounter(MSP_BASEADDR);
+   clearSpeedCounters(MSP_BASEADDR);
    resetErrors();
 }
 
 void drive(double distance) {
    int16_t dist_converted = (int16_t) (distance * 9.4); // cm to sens edges
-   int16_t pos_diff = getPositionDifference();
+   int16_t pos_diff = getPositionDifference(MSP_BASEADDR);
    double duty_cycle[2];
    getPosCorrection(pos_diff, duty_cycle);
 
@@ -142,7 +143,7 @@ void drive(double distance) {
 
    while (dist_traveled < dist_converted) {
       usleep(SAMPLE_PER);
-      pos_diff = getPositionDifference();
+      pos_diff = getPositionDifference(MSP_BASEADDR);
       getPosCorrection(pos_diff, duty_cycle);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[0] * PWM_PER), PWM_M1);
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
@@ -159,7 +160,7 @@ void turn(double arclength) {
    measureSpeed(motor_speed);
 
    int16_t motor_pos[2];
-   getMotorPositions(motor_pos);
+   getMotorPositions(MSP_BASEADDR, motor_pos);
 
    double duty_cycle[2];
    int speed = 40;
@@ -186,7 +187,7 @@ void turn(double arclength) {
       } else {
          PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
       }
-      getMotorPositions(motor_pos);
+      getMotorPositions(MSP_BASEADDR, motor_pos);
    }
    PWM_Disable(PWM_BASEADDR);
    delayUntilStop();
@@ -199,7 +200,7 @@ void swingTurn(double arclength, int dir) {
    measureSpeed(motor_speed);
 
    int16_t motor_pos[2];
-   getMotorPositions(motor_pos);
+   getMotorPositions(MSP_BASEADDR, motor_pos);
 
    double duty_cycle[2];
    getSpeedCorrection(40, motor_speed, duty_cycle);
@@ -217,7 +218,7 @@ void swingTurn(double arclength, int dir) {
          PWM_Set_Duty(PWM_BASEADDR, (u32) 0, PWM_M1);
          PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
       }
-      getMotorPositions(motor_pos);
+      getMotorPositions(MSP_BASEADDR, motor_pos);
    }
    PWM_Disable(PWM_BASEADDR);
    delayUntilStop();
@@ -225,7 +226,7 @@ void swingTurn(double arclength, int dir) {
 
 void delayUntilStop() {
    int motor_speed[2];
-   clearSpeedCounters();
+   clearSpeedCounters(MSP_BASEADDR);
    measureSpeed(motor_speed);
    for (int i = 0; i < 3; i++) {
       while (motor_speed[0] + motor_speed[1]) {

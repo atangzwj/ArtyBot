@@ -34,11 +34,6 @@
 #define MOTOR2_BACKWARD XGpio_DiscreteWrite(xgpio0, M2_CHANNEL, 0x0)
 
 #define MSP_BASEADDR    XPAR_MOTORSPEEDPOSITION_0_S00_AXI_BASEADDR
-#define CLEAR_OFFSET    0x00
-#define M1_POS_OFFSET   0x04 // {m1_pos1, m1_pos2} (use pos1 for speed, pos2 for
-#define M2_POS_OFFSET   0x08 // {m2_pos1, m2_pos2}  cumulative pos)
-#define POS_DIFF_OFFSET 0x0C
-#define CLK_OFFSET      0x10 // Resets with pos1 counters above
 
 #define CLK_FREQ XPAR_CPU_M_AXI_DP_FREQ_HZ
 
@@ -58,16 +53,6 @@ void initIO();
 
 void measureSpeed(int motor_speed[]);
 
-void getEdgeCounts(int m1[], int m2[]);
-
-void clearSpeedCounters();
-
-void getMotorPositions(int16_t motor_pos[]);
-
-int16_t getPositionDifference();
-
 int16_t getDistanceTraveled();
-
-void clearPosCounter();
 
 #endif /* SRC_MOTORCONTROL_H_ */

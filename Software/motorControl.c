@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include "motorControl.h"
+#include "MotorSpeedPosition.h"
 
 
 /************ Function Definitions ************/
@@ -38,7 +39,7 @@ void measureSpeed(int motor_speed[]) {
    int m1[2];
    int m2[2];
 
-   getEdgeCounts(m1, m2);
+   getEdgeCounts(MSP_BASEADDR, m1, m2);
 
    // Compute wheel speeds in RPM
    // The full computation is 0.25 * 60 / 48 * sens * CLK_FREQ / clk
@@ -48,46 +49,12 @@ void measureSpeed(int motor_speed[]) {
    // Constants at beginning of expression have been combined to 0.3125
    motor_speed[0] = 0.3125 * m1[0] * CLK_FREQ / m1[1];
    motor_speed[1] = 0.3125 * m2[0] * CLK_FREQ / m2[1];
-   clearSpeedCounters();
-}
-
-// Take 2 int arrays for storing sensor edge and clock edge counts for computing
-// speed of each motor
-void getEdgeCounts(int m1[], int m2[]) {
-   m1[0] = (int) (Xil_In32(MSP_BASEADDR + M1_POS_OFFSET) >> 16);
-   m1[1] = (int)  Xil_In32(MSP_BASEADDR + CLK_OFFSET);
-
-   m2[0] = (int) (Xil_In32(MSP_BASEADDR + M2_POS_OFFSET) >> 16);
-   m2[1] = (int)  Xil_In32(MSP_BASEADDR + CLK_OFFSET);
-}
-
-// Clear the registers storing counts of sensor edges and clock edges for
-// computing speed
-void clearSpeedCounters() {
-   Xil_Out8(MSP_BASEADDR + CLEAR_OFFSET, 0x1);
-   Xil_Out8(MSP_BASEADDR + CLEAR_OFFSET, 0x0);
-}
-
-void getMotorPositions(int16_t motor_pos[]) {
-   motor_pos[0] = Xil_In16(MSP_BASEADDR + M1_POS_OFFSET);
-   motor_pos[1] = Xil_In16(MSP_BASEADDR + M2_POS_OFFSET);
-}
-
-// Return the difference in sensor positive edges between motor1 and motor2
-int16_t getPositionDifference() {
-   return (int16_t) Xil_In16(MSP_BASEADDR + POS_DIFF_OFFSET);
+   clearSpeedCounters(MSP_BASEADDR);
 }
 
 // Return distance traveled by motor1 or motor2, whichever is greater
 int16_t getDistanceTraveled() {
-   int16_t m1_distance = (int16_t) Xil_In16(MSP_BASEADDR + M1_POS_OFFSET);
-   int16_t m2_distance = (int16_t) Xil_In16(MSP_BASEADDR + M2_POS_OFFSET);
-//   return m1_distance > m2_distance ? m1_distance : m2_distance;
-   return (m1_distance + m2_distance) / 2;
-}
-
-// Clear the cumulative position counters for both motors
-void clearPosCounter() {
-   Xil_Out8(MSP_BASEADDR + CLEAR_OFFSET, 0x2);
-   Xil_Out8(MSP_BASEADDR + CLEAR_OFFSET, 0x0);
+   int16_t motor_pos[2];
+   getMotorPositions(MSP_BASEADDR, motor_pos);
+   return (motor_pos[0] + motor_pos[1]) / 2;
 }
