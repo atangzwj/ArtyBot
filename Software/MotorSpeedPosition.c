@@ -24,6 +24,7 @@ void clearSpeedCounters(u32 baseAddr) {
    Xil_Out8(baseAddr + CLEAR_OFFSET, 0x0);
 }
 
+// Store positions of motor1, motor2 in given array
 void getMotorPositions(u32 baseAddr, int16_t motor_pos[]) {
    motor_pos[0] = Xil_In16(baseAddr + M1_POS_OFFSET);
    motor_pos[1] = Xil_In16(baseAddr + M2_POS_OFFSET);
