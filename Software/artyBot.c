@@ -13,6 +13,7 @@
 #include "artyBot.h"
 #include "microblaze_sleep.h"
 #include "motorControl.h"
+#include "MotorSpeedPosition.h"
 #include "pidController.h"
 #include "PWM.h"
 
@@ -65,7 +66,7 @@ void displaySpeed() {
       } else {
          PWM_Disable(PWM_BASEADDR);
       }
-      clearSpeedCounters();      // Clear counters
+      clearSpeedCounters(MSP_BASEADDR);      // Clear counters
       usleep(500000);            // Sleep half second
       measureSpeed(motor_speed); // Take measurements
       xil_printf("[ %3d , %3d ]\r", motor_speed[0], motor_speed[1]);
@@ -81,7 +82,7 @@ void driveStraight() {
    MOTOR1_FORWARD; // Set motor directions to forward
    MOTOR2_FORWARD;
 
-   int16_t pos_diff = getPositionDifference();
+   int16_t pos_diff = getPositionDifference(MSP_BASEADDR);
 
    int sw0 = 0;
    double duty_cycle[2] = {0, 0};
@@ -95,10 +96,10 @@ void driveStraight() {
          PWM_Enable(PWM_BASEADDR);
       } else {
          PWM_Disable(PWM_BASEADDR);
-         clearPosCounter();
+         clearPosCounter(MSP_BASEADDR);
          resetErrors();
       }
       usleep(25000); // 40 Hz sampling frequency
-      pos_diff = getPositionDifference();
+      pos_diff = getPositionDifference(MSP_BASEADDR);
    }
 }
