@@ -2,7 +2,7 @@
  * motorControl.h
  *
  *  Created on: Jul 14, 2017
- *      Author: AdminUser
+ *      Author: Arvin Tang
  */
 
 #ifndef SRC_MOTORCONTROL_H_

@@ -13,8 +13,9 @@
 #include "artyBotLib.h"
 #include "motorControl.h"
 #include "platform.h"
+#include "sensor.h"
 
-
+#include "microblaze_sleep.h"
 /************ Function Prototypes ************/
 
 void drawPolygon(int n, int sideLength);
@@ -35,13 +36,11 @@ int main() {
       sw0 = XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1;
    }
 
-   driveForward(72);
-   turnRight(90);
-   driveForward(72);
-   turnLeft(180);
-   driveForward(72);
-   turnRight(90);
-   driveBackward(72);
+   while (1) {
+      u8 dist = getDistance(SENSOR_BASEADDR);
+      xil_printf("dist = %3d\r", dist);
+      usleep(500000);
+   }
 
    cleanup_platform();
    return 0;
