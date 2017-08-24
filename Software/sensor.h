@@ -18,4 +18,8 @@
 #define SENSOR_BASEADDR XPAR_MAXSONAR_PROCESSOR_0_S00_AXI_BASEADDR
 
 
+/************ Function Prototypes ************/
+
+int isBlocked();
+
 #endif /* SRC_SENSOR_H_ */

@@ -7,14 +7,11 @@
 
 /************ Function Definitions ************/
 
-u8 getDistance(u32 baseAddr) {
-   return Xil_In8(baseAddr + DISTANCE_REG_OFFSET);
+u32 getDistance(u32 baseAddr, int clk_freq) {
+   u64 pulse_len = (u64) getPulseLength(baseAddr);
+	return (u32) (pulse_len / 147 * 1000000 / clk_freq);
 }
 
-u32 getDistanceReg(u32 baseAddr) {
-   return Xil_In32(baseAddr + DISTANCE_REG_OFFSET);
-}
-
-int dataIsValid(u32 baseAddr) {
-   return (int) Xil_In32(baseAddr + DATA_VALID_OFFSET);
+u32 getPulseLength(u32 baseAddr) {
+   return Xil_In32(baseAddr + PULSE_LEN_OFFSET);
 }

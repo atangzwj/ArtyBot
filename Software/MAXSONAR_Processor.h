@@ -10,16 +10,13 @@
 
 /************ Macro Definitions ************/
 
-#define DISTANCE_REG_OFFSET 0x00
-#define DATA_VALID_OFFSET   0x04
+#define PULSE_LEN_OFFSET 0x00
 
 
 /************ Function Prototypes ************/
 
-u8 getDistance(u32 baseAddr);
+u32 getDistance(u32 baseAddr, int clk_freq);
 
-u32 getDistanceReg(u32 baseAddr);
-
-int dataIsValid(u32 baseAddr);
+u32 getPulseLength(u32 baseAddr);
 
 #endif // MAXSONAR_PROCESSOR_H
