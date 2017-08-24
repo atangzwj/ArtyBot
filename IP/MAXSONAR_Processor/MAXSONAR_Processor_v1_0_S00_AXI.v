@@ -105,7 +105,7 @@ module MAXSONAR_Processor_v1_0_S00_AXI #
    //------------------------------------------------
    //-- Number of Slave Registers 4
    wire [C_S_AXI_DATA_WIDTH-1:0] slv_reg0;
-   wire [C_S_AXI_DATA_WIDTH-1:0] slv_reg1;
+   reg  [C_S_AXI_DATA_WIDTH-1:0] slv_reg1;
    reg  [C_S_AXI_DATA_WIDTH-1:0] slv_reg2;
    reg  [C_S_AXI_DATA_WIDTH-1:0] slv_reg3;
    wire                          slv_reg_rden;
@@ -213,7 +213,7 @@ module MAXSONAR_Processor_v1_0_S00_AXI #
      if ( S_AXI_ARESETN == 1'b0 )
        begin
 //         slv_reg0 <= 0; /**** Assign to these registers below in user logic ****/
-//         slv_reg1 <= 0;
+         slv_reg1 <= 0;
          slv_reg2 <= 0;
          slv_reg3 <= 0;
        end 
@@ -233,7 +233,7 @@ module MAXSONAR_Processor_v1_0_S00_AXI #
                  if ( S_AXI_WSTRB[byte_index] == 1 ) begin
                    // Respective byte enables are asserted as per write strobes 
                    // Slave register 1 /**** Assigned to below in user logic ****/
-//                   slv_reg1[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
+                   slv_reg1[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
                  end  
              2'h2:
                for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
@@ -251,18 +251,18 @@ module MAXSONAR_Processor_v1_0_S00_AXI #
                  end  
              default : begin
 //                         slv_reg0 <= slv_reg0; /**** Assigned to below in user logic ****/
-//                         slv_reg1 <= slv_reg1;
+                         slv_reg1 <= slv_reg1;
                          slv_reg2 <= slv_reg2;
                          slv_reg3 <= slv_reg3;
                        end
            endcase
          end
      end
-   end    
+   end
 
    // Implement write response logic generation
    // The write response and response valid signals are asserted by the slave 
-   // when axi_wready, S_AXI_WVALID, axi_wready and S_AXI_WVALID are asserted.  
+   // when axi_wready, S_AXI_WVALID, axi_wready and S_AXI_WVALID are asserted.
    // This marks the acceptance of address and indicates the status of 
    // write transaction.
 
@@ -285,7 +285,7 @@ module MAXSONAR_Processor_v1_0_S00_AXI #
            begin
              if (S_AXI_BREADY && axi_bvalid) 
                //check if bready is asserted while bvalid is high) 
-               //(there is a possibility that bready is always asserted high)   
+               //(there is a possibility that bready is always asserted high)
                begin
                  axi_bvalid <= 1'b0; 
                end  
@@ -380,79 +380,30 @@ module MAXSONAR_Processor_v1_0_S00_AXI #
      else
        begin    
          // When there is a valid read address (S_AXI_ARVALID) with 
-         // acceptance of read address by the slave (axi_arready), 
+         // acceptance of read address by the slave (axi_arready),
          // output the read dada 
          if (slv_reg_rden)
            begin
              axi_rdata <= reg_data_out;     // register read data
            end   
        end
-   end    
+   end
 
    // Add user logic here
-   wire [7:0] distance;
-   wire       new_dist;
-   distanceRegister dist_reg (
-      .clk(S_AXI_ACLK),
-      .reset(S_AXI_ARESETN),
-      .distReg(slv_reg0),
-      .data_valid(slv_reg1[0]),
-      .distance(distance),
-      .new_dist(new_dist)
-   );
+   reg pwm_delay, pwm_clean;
+   always @ (posedge S_AXI_ACLK) begin
+      pwm_delay <= pwm_sig;
+      pwm_clean <= pwm_delay;
+   end
 
-   pwmToDistance pwm_to_dist (
+   wire reset;
+   assign reset = ~S_AXI_ARESETN;
+   pulseLength pulse_length (
       .clk(S_AXI_ACLK),
-      .reset(S_AXI_ARESETN),
-      .distance(distance),
-      .new_dist(new_dist),
-      .pwm(pwm_sig)
+      .reset(reset),
+      .pulse_len(slv_reg0),
+      .pwm(pwm_clean)
    );
    // User logic ends
 
-endmodule
-
-module distanceModules_testbench ();
-   reg         clk, reset;
-   wire [31:0] distReg;
-   wire        data_valid;
-   wire [7:0]  distance;
-   wire        new_dist;
-   reg         pwm;
-   
-   distanceRegister dut0 (
-      .clk(clk),
-      .reset(reset),
-      .distReg(distReg),
-      .data_valid(data_valid),
-      .distance(distance),
-      .new_dist(new_dist)
-   );
-   
-   pwmToDistance dut1 (
-      .clk(clk),
-      .reset(reset),
-      .distance(distance),
-      .new_dist(new_dist),
-      .pwm(pwm)
-   );
-   
-   parameter CLK_PER = 2;
-   initial begin
-      clk <= 1;
-      forever #(CLK_PER / 2) clk <= ~clk;
-   end
-   
-   initial begin
-      reset <= 0; pwm <= 0; #2;
-      reset <= 1;           #2;
-      reset <= 0;           #2;
-                  pwm <= 1; #25000;
-                  pwm <= 0; #12;
-                  pwm <= 1; #100000;
-                  pwm <= 0; #12;
-                  pwm <= 1; #260000;
-                  pwm <= 0; #12;
-   $stop;
-   end
 endmodule
