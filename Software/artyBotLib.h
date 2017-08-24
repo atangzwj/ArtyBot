@@ -20,8 +20,18 @@ void turnLeft(int degrees);
 
 void turnRight(int degrees);
 
+void driveForwardContinuous(double distance);
+
+void driveBackwardContinuous(double distance);
+
+void turnLeftContinuous(int degrees);
+
+void turnRightContinuous(int degrees);
+
 void swingTurnLeft(int degrees);
 
 void swingTurnRight(int degrees);
+
+void delayUntilStop();
 
 #endif /* SRC_ARTYBOTLIB_H_ */
