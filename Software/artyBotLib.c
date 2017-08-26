@@ -111,7 +111,7 @@ void swingTurnRight(int degrees) {
 
 void setDirForward() {
    PWM_Disable(PWM_BASEADDR);
-   usleep(500);
+   usleep(100);
    MOTOR1_FORWARD;
    MOTOR2_FORWARD;
    clearPosCounter(MSP_BASEADDR);
@@ -120,7 +120,7 @@ void setDirForward() {
 
 void setDirBackward() {
    PWM_Disable(PWM_BASEADDR);
-   usleep(500);
+   usleep(100);
    MOTOR1_BACKWARD;
    MOTOR2_BACKWARD;
    clearPosCounter(MSP_BASEADDR);
@@ -129,7 +129,7 @@ void setDirBackward() {
 
 void setDirLeft() {
    PWM_Disable(PWM_BASEADDR);
-   usleep(500);
+   usleep(100);
    MOTOR1_BACKWARD;
    MOTOR2_FORWARD;
    clearPosCounter(MSP_BASEADDR);
@@ -139,7 +139,7 @@ void setDirLeft() {
 
 void setDirRight() {
    PWM_Disable(PWM_BASEADDR);
-   usleep(500);
+   usleep(100);
    MOTOR1_FORWARD;
    MOTOR2_BACKWARD;
    clearPosCounter(MSP_BASEADDR);
