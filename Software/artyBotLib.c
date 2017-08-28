@@ -22,6 +22,11 @@
 #define FULL_SWING_TURN_ARCLENGTH 97.4
 
 
+/************ Global Variables ************/
+
+static char dir;
+
+
 /************ Function Prototypes ************/
 
 void setDirForward();
@@ -47,6 +52,7 @@ void artyBotInit() {
    clearSpeedCounters(MSP_BASEADDR);
    PWM_Set_Period(PWM_BASEADDR, PWM_PER);
    PWM_Disable(PWM_BASEADDR);
+   dir = 'n';
 }
 
 // Drive bot forward by given distance (in cm)
@@ -110,41 +116,53 @@ void swingTurnRight(int degrees) {
 }
 
 void setDirForward() {
-   PWM_Disable(PWM_BASEADDR);
-   usleep(100);
-   MOTOR1_FORWARD;
-   MOTOR2_FORWARD;
+   if (dir != 'F') {
+      PWM_Disable(PWM_BASEADDR);
+      usleep(6);
+      MOTOR1_FORWARD;
+      MOTOR2_FORWARD;
+      resetErrors();
+      dir = 'F';
+   }
    clearPosCounter(MSP_BASEADDR);
-   resetErrors();
 }
 
 void setDirBackward() {
-   PWM_Disable(PWM_BASEADDR);
-   usleep(100);
-   MOTOR1_BACKWARD;
-   MOTOR2_BACKWARD;
+   if (dir != 'B') {
+      PWM_Disable(PWM_BASEADDR);
+      usleep(6);
+      MOTOR1_BACKWARD;
+      MOTOR2_BACKWARD;
+      resetErrors();
+      dir = 'B';
+   }
    clearPosCounter(MSP_BASEADDR);
-   resetErrors();
 }
 
 void setDirLeft() {
-   PWM_Disable(PWM_BASEADDR);
-   usleep(100);
-   MOTOR1_BACKWARD;
-   MOTOR2_FORWARD;
+   if (dir != 'L') {
+      PWM_Disable(PWM_BASEADDR);
+      usleep(6);
+      MOTOR1_BACKWARD;
+      MOTOR2_FORWARD;
+      resetErrors();
+      dir = 'L';
+   }
    clearPosCounter(MSP_BASEADDR);
    clearSpeedCounters(MSP_BASEADDR);
-   resetErrors();
 }
 
 void setDirRight() {
-   PWM_Disable(PWM_BASEADDR);
-   usleep(100);
-   MOTOR1_FORWARD;
-   MOTOR2_BACKWARD;
+   if (dir != 'R') {
+      PWM_Disable(PWM_BASEADDR);
+      usleep(6);
+      MOTOR1_FORWARD;
+      MOTOR2_BACKWARD;
+      resetErrors();
+      dir = 'R';
+   }
    clearPosCounter(MSP_BASEADDR);
    clearSpeedCounters(MSP_BASEADDR);
-   resetErrors();
 }
 
 void drive(double distance) {
