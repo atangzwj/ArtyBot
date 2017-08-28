@@ -9,7 +9,7 @@
 
 u32 getDistance(u32 baseAddr, int clk_freq) {
    u64 pulse_len = (u64) getPulseLength(baseAddr);
-	return (u32) (pulse_len / 147 * 1000000 / clk_freq);
+	return (u32) (pulse_len * 1000000 / 147 / clk_freq);
 }
 
 u32 getPulseLength(u32 baseAddr) {
