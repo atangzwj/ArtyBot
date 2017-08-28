@@ -20,7 +20,7 @@
 #define K_INTG_SPEED 0.0024
 #define K_DIFF_SPEED 0.0076
 
-#define BASE_DUTY_CYCLE      0.6
+#define BASE_DUTY_CYCLE 0.6
 
 
 /************ Global Variables ************/
