@@ -56,7 +56,7 @@ int main() {
       sw0 = READ_SW0;
    }
 
-   avoidWalls();
+   joystickSensorDrive();
 
    cleanup_platform();
    return 0;
@@ -119,23 +119,23 @@ void joystickSensorDrive() {
    PmodJSTK2 *pmodJSTK2 = (PmodJSTK2*) calloc(1, sizeof(PmodJSTK2));
    JSTK2_begin(pmodJSTK2, PMODJSTK2_SPI_ADDR, PMODJSTK2_GPIO_ADDR, CLK_FREQ);
 
-   JSTK2_Position pos;
-   u8 trigger = JSTK2_getBtns(pmodJSTK2) & 0x2;
-   while (!trigger) {
-      pos = JSTK2_getPosition(pmodJSTK2);
-      u8 x = pos.XData;
-      u8 y = pos.YData;
+   JSTK2_DataPacket dp;
+   u8 trig = 0;
+   while (!trig) {
+      dp = JSTK2_getDataPacket(pmodJSTK2);
+      u16 x = dp.XData;
+      u16 y = dp.YData;
 
-      trigger = JSTK2_getBtns(pmodJSTK2) & 0x2;
+      trig = dp.Trigger;
 
-      if (x < 96) {
+      if (x < 376) {
          turnLeftContinuous(5);
-      } else if (x > 160) {
+      } else if (x > 627) {
          turnRightContinuous(5);
-      } else if (!isBlocked() && y < 96) {
-         driveForwardContinuous(1);
-      } else if (y > 160) {
+      } else if (y < 376) {
          driveBackwardContinuous(1);
+      } else if (!isBlocked() && y > 627) {
+         driveForwardContinuous(1);
       }
    }
 
