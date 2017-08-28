@@ -2,9 +2,9 @@
 <Root MajorVersion="0" MinorVersion="33">
   <CompositeFile CompositeFileTopName="artyBot" CanBeSetAsTop="false" CanDisplayChildGraph="true">
     <Description>Composite Fileset</Description>
-    <Generation Name="SYNTHESIS" State="GENERATED" Timestamp="1501610373"/>
-    <Generation Name="IMPLEMENTATION" State="GENERATED" Timestamp="1501610373"/>
-    <Generation Name="SIMULATION" State="GENERATED" Timestamp="1501610373"/>
+    <Generation Name="SYNTHESIS" State="GENERATED" Timestamp="1503938852"/>
+    <Generation Name="IMPLEMENTATION" State="GENERATED" Timestamp="1503938852"/>
+    <Generation Name="SIMULATION" State="GENERATED" Timestamp="1503938852"/>
     <FileCollection Name="SOURCES" Type="SOURCES">
       <File Name="ip\artyBot_clk_wiz_0_0\artyBot_clk_wiz_0_0.xci" Type="IP">
         <Instance HierarchyPath="clk_wiz_0"/>
@@ -158,13 +158,6 @@
         <UsedIn Val="IMPLEMENTATION"/>
         <UsedIn Val="SIMULATION"/>
       </File>
-      <File Name="hdl\artyBot.v" Type="Verilog">
-        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="false" IsStatusTracked="false"/>
-        <Library Name="xil_defaultlib"/>
-        <UsedIn Val="SYNTHESIS"/>
-        <UsedIn Val="IMPLEMENTATION"/>
-        <UsedIn Val="SIMULATION"/>
-      </File>
       <File Name="ip\artyBot_MotorSpeedPosition_0_0\artyBot_MotorSpeedPosition_0_0.xci" Type="IP">
         <Instance HierarchyPath="MotorSpeedPosition_0"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
@@ -247,6 +240,45 @@
       </File>
       <File Name="ip\artyBot_xlconstant_1_0\artyBot_xlconstant_1_0.xci" Type="IP">
         <Instance HierarchyPath="xlconstant_1"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_MAXSONAR_Processor_0_0\artyBot_MAXSONAR_Processor_0_0.xci" Type="IP">
+        <Instance HierarchyPath="MAXSONAR_Processor_0"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_xlslice_0_0\artyBot_xlslice_0_0.xci" Type="IP">
+        <Instance HierarchyPath="xlslice_0"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_pmod_bridge_1_0\artyBot_pmod_bridge_1_0.xci" Type="IP">
+        <Instance HierarchyPath="pmod_bridge_1"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="hdl\artyBot.v" Type="Verilog">
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="false" IsStatusTracked="false"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\artyBot_PmodJSTK2_0_1\artyBot_PmodJSTK2_0_1.xci" Type="IP">
+        <Instance HierarchyPath="PmodJSTK2_0"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
         <Library Name="xil_defaultlib"/>
         <UsedIn Val="SYNTHESIS"/>
