@@ -32,6 +32,11 @@ void initIO() {
    XGpio_SetDataDirection(xgpio1, SW_CHANNEL, 0xF);
 }
 
+void endIO() {
+   free(xgpio0);
+   free(xgpio1);
+}
+
 // Takes an int array to store the angular speeds of the wheel on motors 1 and
 // 2, respectively, in RPM
 // Clears the counts after taking measurements

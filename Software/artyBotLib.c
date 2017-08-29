@@ -14,6 +14,7 @@
 #include "pidController.h"
 #include "PWM.h"
 
+
 /************ Macro Definitions ************/
 
 #define SAMPLE_PER 25000 // 25 ms => 40 Hz sample frequency
@@ -53,6 +54,10 @@ void artyBotInit() {
    PWM_Set_Period(PWM_BASEADDR, PWM_PER);
    PWM_Disable(PWM_BASEADDR);
    dir = 'n';
+}
+
+void artyBotEnd() {
+   endIO();
 }
 
 // Drive bot forward by given distance (in cm)

@@ -58,6 +58,7 @@ int main() {
 
    joystickSensorDrive();
 
+   artyBotEnd();
    cleanup_platform();
    return 0;
 }
@@ -112,6 +113,7 @@ void joystickDrive() {
       }
    }
 
+   free(pmodJSTK2);
    JSTK2_end(pmodJSTK2);
 }
 
@@ -139,5 +141,6 @@ void joystickSensorDrive() {
       }
    }
 
+   free(pmodJSTK2);
    JSTK2_end(pmodJSTK2);
 }

@@ -12,6 +12,8 @@
 
 void artyBotInit();
 
+void artyBotEnd();
+
 void driveForward(double distance);
 
 void driveBackward(double distance);

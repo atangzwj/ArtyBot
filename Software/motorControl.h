@@ -51,6 +51,8 @@ XGpio_Config *xgpio_cfg1;
 
 void initIO();
 
+void endIO();
+
 void measureSpeed(int motor_speed[]);
 
 int16_t getDistanceTraveled();
