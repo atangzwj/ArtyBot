@@ -25,30 +25,36 @@ module posManager (
    output wire [15:0] pos21,
    output wire [15:0] pos22,
    output wire [15:0] pos_diff,
+   output reg  [15:0] pos_diff_prev,
    output reg  [31:0] count_clk,
    input  wire        m1,
    input  wire        m2,
    input  wire [1:0]  clear
 );
 
-   reg m1_delay, m2_delay, m1_clean, m2_clean;
-
+   reg       m1_delay, m2_delay, m1_clean, m2_clean;
+   reg [1:0] clear_prev;
    initial begin
-      count_clk = 32'b0;
-      m1_delay  =  1'b0;
-      m2_delay  =  1'b0;
-      m1_clean  =  1'b0;
-      m2_clean  =  1'b0;
+      count_clk  = 32'b0;
+      m1_delay   =  1'b0;
+      m2_delay   =  1'b0;
+      m1_clean   =  1'b0;
+      m2_clean   =  1'b0;
+      clear_prev =  2'b0;
    end
 
    always @ (posedge clk) begin
       if (clear[0]) count_clk <= 32'b0;
       else          count_clk <= count_clk + 1'b1;
 
+      if (~clear_prev[1] & clear[1]) pos_diff_prev <= pos_diff;
+
       m1_delay <= m1;
       m2_delay <= m2;
       m1_clean <= m1_delay;
       m2_clean <= m2_delay;
+      
+      clear_prev <= clear;
    end
 
    wire subtract;
@@ -85,7 +91,7 @@ endmodule
 
 module posManager_testbench ();
    reg         clk;
-   wire [15:0] pos11, pos12, pos21, pos22, pos_diff;
+   wire [15:0] pos11, pos12, pos21, pos22, pos_diff, pos_diff_prev;
    wire [31:0] count_clk;
    reg         m1, m2;
    reg  [1:0]  clear;
@@ -97,6 +103,7 @@ module posManager_testbench ();
       .pos21(pos21),
       .pos22(pos22),
       .pos_diff(pos_diff),
+      .pos_diff_prev(pos_diff_prev),
       .count_clk(count_clk),
       .m1(m1),
       .m2(m2),

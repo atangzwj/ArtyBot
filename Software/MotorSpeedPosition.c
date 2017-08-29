@@ -30,9 +30,14 @@ void getMotorPositions(u32 baseAddr, int16_t motor_pos[]) {
    motor_pos[1] = Xil_In16(baseAddr + M2_POS_OFFSET);
 }
 
-// Return the difference in sensor positive edges between motor1 and motor2
+// Return the difference in sensor edges between motor1 and motor2
 int16_t getPositionDifference(u32 baseAddr) {
    return (int16_t) Xil_In16(baseAddr + POS_DIFF_OFFSET);
+}
+
+// Return the previous difference in sensor edges between motor1 and motor2
+int16_t getPreviousPositionDifference(u32 baseAddr) {
+   return (int16_t) (Xil_In16(baseAddr + POS_DIFF_OFFSET) >> 16);
 }
 
 // Clear the cumulative position counters for both motors
