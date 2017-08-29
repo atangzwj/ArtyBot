@@ -26,6 +26,9 @@
 /************ Global Variables ************/
 
 static char dir;
+static char dir_prev;
+
+static int16_t pos_diff_prev;
 
 
 /************ Function Prototypes ************/
@@ -54,6 +57,8 @@ void artyBotInit() {
    PWM_Set_Period(PWM_BASEADDR, PWM_PER);
    PWM_Disable(PWM_BASEADDR);
    dir = 'n';
+   dir_prev = 'n';
+   pos_diff_prev = getPositionDifference(MSP_BASEADDR);
 }
 
 void artyBotEnd() {
@@ -121,6 +126,7 @@ void swingTurnRight(int degrees) {
 }
 
 void setDirForward() {
+   dir_prev = dir;
    if (dir != 'F') {
       PWM_Disable(PWM_BASEADDR);
       usleep(6);
@@ -133,6 +139,7 @@ void setDirForward() {
 }
 
 void setDirBackward() {
+   dir_prev = dir;
    if (dir != 'B') {
       PWM_Disable(PWM_BASEADDR);
       usleep(6);
@@ -145,6 +152,7 @@ void setDirBackward() {
 }
 
 void setDirLeft() {
+   dir_prev = dir;
    if (dir != 'L') {
       PWM_Disable(PWM_BASEADDR);
       usleep(6);
@@ -158,6 +166,7 @@ void setDirLeft() {
 }
 
 void setDirRight() {
+   dir_prev = dir;
    if (dir != 'R') {
       PWM_Disable(PWM_BASEADDR);
       usleep(6);
@@ -174,7 +183,11 @@ void drive(double distance) {
    int16_t dist_converted = (int16_t) (distance * 9.4); // cm to sens edges
    int16_t pos_diff = getPositionDifference(MSP_BASEADDR);
    double duty_cycle[2];
-   getPosCorrection(pos_diff, duty_cycle);
+   if (dir == dir_prev) {
+      getPosCorrection(pos_diff_prev, duty_cycle);
+   } else {
+      getPosCorrection(pos_diff, duty_cycle);
+   }
 
    int16_t dist_traveled = getDistanceTraveled();
 
@@ -190,6 +203,7 @@ void drive(double distance) {
       PWM_Set_Duty(PWM_BASEADDR, (u32) (duty_cycle[1] * PWM_PER), PWM_M2);
       dist_traveled = getDistanceTraveled();
    }
+   pos_diff_prev = pos_diff;
    PWM_Disable(PWM_BASEADDR);
 }
 
