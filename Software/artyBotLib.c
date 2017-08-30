@@ -237,6 +237,7 @@ void turnLeftContinuous(int degrees) {
 void turnRightContinuous(int degrees) {
    double arclength = FULL_TURN_ARCLENGTH * (degrees / 360.0);
    setDirRight();
+
    turn(arclength);
 }
 
@@ -345,14 +346,12 @@ void setDirBackward() {
  */
 void setDirLeft() {
    dir_prev = dir;
-   if (dir != 'L') {
-      PWM_Disable(PWM_BASEADDR);
-      usleep(6);
-      MOTOR1_BACKWARD;
-      MOTOR2_FORWARD;
-      resetErrors();
-      dir = 'L';
-   }
+   PWM_Disable(PWM_BASEADDR);
+   usleep(6);
+   MOTOR1_BACKWARD;
+   MOTOR2_FORWARD;
+   resetErrors();
+   dir = 'L';
    clearPosCounter(MSP_BASEADDR);
    clearSpeedCounters(MSP_BASEADDR);
 }
@@ -372,14 +371,12 @@ void setDirLeft() {
  */
 void setDirRight() {
    dir_prev = dir;
-   if (dir != 'R') {
-      PWM_Disable(PWM_BASEADDR);
-      usleep(6);
-      MOTOR1_FORWARD;
-      MOTOR2_BACKWARD;
-      resetErrors();
-      dir = 'R';
-   }
+   PWM_Disable(PWM_BASEADDR);
+   usleep(6);
+   MOTOR1_FORWARD;
+   MOTOR2_BACKWARD;
+   resetErrors();
+   dir = 'R';
    clearPosCounter(MSP_BASEADDR);
    clearSpeedCounters(MSP_BASEADDR);
 }
