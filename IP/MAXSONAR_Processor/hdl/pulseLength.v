@@ -25,7 +25,7 @@ module pulseLength (
          pulse_len <= count_clk;
          count_clk <= 32'b0;
       end
-      
+
       pwm_prev <= pwm;
    end
 endmodule
@@ -34,20 +34,20 @@ module pulseLength_testbench ();
    reg         clk, reset;
    wire [31:0] pulse_len;
    reg         pwm;
-   
+
    pulseLength dut (
       .clk(clk),
       .reset(reset),
       .pulse_len(pulse_len),
       .pwm(pwm)
    );
-   
+
    parameter CLK_PER = 10;
    initial begin
       clk <= 1;
       forever #(CLK_PER / 2) clk <= ~clk;
    end
-   
+
    integer i;
    initial begin
          reset <= 0; pwm <= 0; @(posedge clk);
