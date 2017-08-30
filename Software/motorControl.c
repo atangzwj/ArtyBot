@@ -1,9 +1,12 @@
-/*
+/**
  * motorControl.c
  *
  *  Created on: Jul 14, 2017
  *      Author: Arvin Tang
- */
+ *
+ *  This file contains functions for initializing ArtyBot inputs and outputs and
+ *  functions to check speeds and positions of the motors
+**/
 
 /************ Include Files ************/
 
@@ -14,7 +17,18 @@
 
 /************ Function Definitions ************/
 
-// Initialize Arty Board inputs and outputs
+/*
+ * void initIO()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Initialize Arty Board inputs and outputs
+ */
 void initIO() {
    // Initialize XGpio structs
    xgpio0 = (XGpio*) calloc(1, sizeof(XGpio));
@@ -32,14 +46,36 @@ void initIO() {
    XGpio_SetDataDirection(xgpio1, SW_CHANNEL, 0xF);
 }
 
+/*
+ * endIO()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Clean up Arty Board initializations
+ */
 void endIO() {
    free(xgpio0);
    free(xgpio1);
 }
 
-// Takes an int array to store the angular speeds of the wheel on motors 1 and
-// 2, respectively, in RPM
-// Clears the counts after taking measurements
+/*
+ * measureSpeed(int motor_speed[])
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       motor_speed: Array to store motor speeds
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Measure current angular speeds of the motor1 and motor2 (RPM) and store
+ *       them in motor_speed. Clears counts after taking measurements
+ */
 void measureSpeed(int motor_speed[]) {
    int m1[2];
    int m2[2];
@@ -57,7 +93,18 @@ void measureSpeed(int motor_speed[]) {
    clearSpeedCounters(MSP_BASEADDR);
 }
 
-// Return distance traveled by motor1 or motor2, whichever is greater
+/*
+ * int16_t getDistanceTraveled()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       Mean distance traveled by motor1 and motor2
+ *
+ * Description:
+ *       Return mean distance traveled by motor1 and motor2
+ */
 int16_t getDistanceTraveled() {
    int16_t motor_pos[2];
    getMotorPositions(MSP_BASEADDR, motor_pos);

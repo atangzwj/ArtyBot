@@ -1,4 +1,4 @@
-/*
+/**
  * main.c
  *
  *  Created on: Jun 29, 2017
@@ -11,7 +11,7 @@
  *      joystickSensorDrive().
  *  Inside of main(), uncomment the demo that you would like to run.
  *  drawPolygon() and avoidWalls() wait for sw0 to be toggled on before running
- */
+**/
 
 /************ Include Files ************/
 
@@ -55,9 +55,9 @@ int main() {
    artyBotInit();
 
 //   drawPolygon(4, 72);
-//   avoidWalls();
+   avoidWalls();
 //   joystickDrive();
-   joystickSensorDrive();
+//   joystickSensorDrive();
 
    artyBotEnd();
 
@@ -65,8 +65,20 @@ int main() {
    return 0;
 }
 
-// Drive the bot when sw0 toggled on to trace an n-sided regular polygon with
-// given side length
+/*
+ * void drawPolygon(int n, int sideLength)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       n:          Number of side lengths for the bot to trace
+ *       sideLength: Length of each side length in centimeters
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Drive the ArtyBot when sw0 toggled on to trace an n-sided regular
+ *       polygon with given side length
+ */
 void drawPolygon(int n, int sideLength) {
    int sw0 = READ_SW0;
    while (!sw0) {
@@ -78,13 +90,36 @@ void drawPolygon(int n, int sideLength) {
    }
 }
 
-// Returns logical true if PmodMAXSONAR detects object within 8 inches
+/*
+ * int isBlocked()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       Logical true/false
+ *
+ * Description:
+ *       Returns logical true if PmodMAXSONAR detects object within 8 inches
+ */
 int isBlocked() {
    return getDistance(SENSOR_BASEADDR, CLK_FREQ) < 8;
 }
 
-// Drive the bot forward when sw0 toggled on, if obstacle detected in front,
-// turn 90 degrees to the right until path is clear and then move forward
+/*
+ * void avoidWalls()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Drive ArtyBot forward when sw0 toggled on, if obstacle detected in
+ *       front, turn 90 degrees to the right until path is clear, then continue
+ *       moving forward
+ */
 void avoidWalls() {
    int sw0 = READ_SW0;
    while (!sw0) {
@@ -93,13 +128,26 @@ void avoidWalls() {
    while (sw0) {
       driveForwardContinuous(1);
       while (isBlocked()) {
+         delayUntilStop();
          turnRight(90);
       }
       sw0 = READ_SW0;
    }
 }
 
-// Drive the bot forward, backward, left, or right based on PmodJSTK2 input
+/*
+ * void joystickDrive()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Drive bot forward, backward, left, or right based on PmodJSTK2 input
+ *       Pressing the trigger button ends the function
+ */
 void joystickDrive() {
    PmodJSTK2 *pmodJSTK2 = (PmodJSTK2*) calloc(1, sizeof(PmodJSTK2));
    JSTK2_begin(pmodJSTK2, PMODJSTK2_SPI_ADDR, PMODJSTK2_GPIO_ADDR, CLK_FREQ);
@@ -128,8 +176,20 @@ void joystickDrive() {
    JSTK2_end(pmodJSTK2);
 }
 
-// Drive the bot forward, backward, left, or right based on PmodJSTK2 input
-// If obstacle detected in front, driving forward will be disabled
+/*
+ * void joystickSensorDrive()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Drive bot forward, backward, left, or right based on PmodJSTK2 input
+ *       If obstacle detected in front, driving forward will be disabled
+ *       Pressing the trigger button ends the function
+ */
 void joystickSensorDrive() {
    PmodJSTK2 *pmodJSTK2 = (PmodJSTK2*) calloc(1, sizeof(PmodJSTK2));
    JSTK2_begin(pmodJSTK2, PMODJSTK2_SPI_ADDR, PMODJSTK2_GPIO_ADDR, CLK_FREQ);

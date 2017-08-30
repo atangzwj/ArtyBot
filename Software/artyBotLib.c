@@ -1,9 +1,11 @@
-/*
+/**
  * artyBotLib.c
  *
  *  Created on: Aug 3, 2017
  *      Author: Arvin Tang
- */
+ *
+ *  Library of driving and steering functions for the ArtyBot
+**/
 
 /************ Include Files ************/
 
@@ -50,6 +52,17 @@ void swingTurn(double arclength, int dir);
 
 /************ Function Definitions ************/
 
+/*
+ * void artyBotInit()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Initialize the ArtyBot
+ */
 void artyBotInit() {
    initIO();
    clearPosCounter(MSP_BASEADDR);
@@ -61,70 +74,224 @@ void artyBotInit() {
    pos_diff_prev = getPositionDifference(MSP_BASEADDR);
 }
 
+/*
+ * void artyBotEnd()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Clean up the ArtyBot
+ */
 void artyBotEnd() {
    endIO();
 }
 
-// Drive bot forward by given distance (in cm)
+/*
+ * void driveForward(double distance)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       distance: Distance in cm to drive the ArtyBot
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Drive forward by given distance (cm), then come to complete stop
+ */
 void driveForward(double distance) {
    driveForwardContinuous(distance);
    delayUntilStop();
 }
 
-// Drive bot backward by given distance (in cm)
+/*
+ * void driveBackward(double distance)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       distance: Distance in cm to drive the ArtyBot
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Drive backward by given distance (cm), then come to complete stop
+ */
 void driveBackward(double distance) {
    driveBackwardContinuous(distance);
    delayUntilStop();
 }
 
-// Turn bot left about the center by given number of degrees from forward
+/*
+ * void turnLeft(int degrees)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       degrees: Angle in degrees to turn the ArtyBot
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Turn left about the center by given angle from forward, then come to
+ *       complete stop
+ */
 void turnLeft(int degrees) {
    turnLeftContinuous(degrees);
    delayUntilStop();
 }
 
-// Turn bot right about the center by given number of degrees from forward
+/*
+ * void turnRight(int degrees)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       degrees: Angle in degrees to turn the ArtyBot
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Turn right about the center by given angle from forward, then come to
+ *       complete stop
+ */
 void turnRight(int degrees) {
    turnRightContinuous(degrees);
    delayUntilStop();
 }
 
+/*
+ * void driveForwardContinuous(double distance)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       distance: Distance in cm to drive the ArtyBot
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Drive forward by given distance (cm), but do not come to complete stop
+ *       Repeated calls to this function given short distances will allow
+ *       processing during apparent continuous driving
+ */
 void driveForwardContinuous(double distance) {
    setDirForward();
    drive(distance);
 }
 
+/*
+ * void driveBackwardContinuous(double distance)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       distance: Distance in cm to drive the ArtyBot
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Drive backward by given distance (cm), but do not come to complete stop
+ *       Repeated calls to this function given short distances will allow
+ *       processing during apparent continuous driving
+ */
 void driveBackwardContinuous(double distance) {
    setDirBackward();
    drive(distance);
 }
 
+/*
+ * void turnLeftContinuous(int degrees)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       degrees: Angle in degrees to turn the ArtyBot
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Turn left about the center by given angle from forward, but do not come
+ *       to complete stop
+ *       Repeated calls to this function given small angles will allow
+ *       processing during apparent continuous turning
+ */
 void turnLeftContinuous(int degrees) {
    double arclength = FULL_TURN_ARCLENGTH * (degrees / 360.0);
    setDirLeft();
    turn(arclength);
 }
 
+/*
+ * void turnRightContinuous(int degrees)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       degrees: Angle in degrees to turn the ArtyBot
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Turn right about the center by given angle from forward, but do not
+ *       come to complete stop
+ *       Repeated calls to this function given small angles will allow
+ *       processing during apparent continuous turning
+ */
 void turnRightContinuous(int degrees) {
    double arclength = FULL_TURN_ARCLENGTH * (degrees / 360.0);
    setDirRight();
    turn(arclength);
 }
 
-// Turn bot about left wheel by given number of degrees from forward
+/*
+ * void swingTurnLeft(int degrees)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       degrees: Angle in degrees to turn the ArtyBot
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Turn left about left wheel by given angle from forward, then come to
+ *       complete stop
+ */
 void swingTurnLeft(int degrees) {
    double arclength = FULL_SWING_TURN_ARCLENGTH * (degrees / 360.0);
    setDirLeft();
    swingTurn(arclength, 0);
+   delayUntilStop();
 }
 
-// Turn bot about right wheel by given number of degrees from forward
+/*
+ * void swingTurnRight(int degrees)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       degrees: Angle in degrees to turn the ArtyBot
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Turn right about right wheel by given angle from forward, then come to
+ *       complete stop
+ */
 void swingTurnRight(int degrees) {
    double arclength = FULL_SWING_TURN_ARCLENGTH * (degrees / 360.0);
    setDirRight();
    swingTurn(arclength, 1);
+   delayUntilStop();
 }
 
+/*
+ * void setDirForward()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Set motor directions to forward and reset position counters
+ */
 void setDirForward() {
    dir_prev = dir;
    if (dir != 'F') {
@@ -138,6 +305,18 @@ void setDirForward() {
    clearPosCounter(MSP_BASEADDR);
 }
 
+/*
+ * void setDirBackward()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Set motor directions to backward and reset position counters
+ */
 void setDirBackward() {
    dir_prev = dir;
    if (dir != 'B') {
@@ -151,6 +330,19 @@ void setDirBackward() {
    clearPosCounter(MSP_BASEADDR);
 }
 
+/*
+ * void setDirLeft()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Set motor directions for left turn (left motor backward, right motor
+ *       forward) and reset position counters
+ */
 void setDirLeft() {
    dir_prev = dir;
    if (dir != 'L') {
@@ -165,6 +357,19 @@ void setDirLeft() {
    clearSpeedCounters(MSP_BASEADDR);
 }
 
+/*
+ * void setDirRight()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Set motor directions for right turn (left motor forward, right motor
+ *       backward) and reset position counters
+ */
 void setDirRight() {
    dir_prev = dir;
    if (dir != 'R') {
@@ -179,6 +384,19 @@ void setDirRight() {
    clearSpeedCounters(MSP_BASEADDR);
 }
 
+/*
+ * void drive(double distance)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       distance: Distance in cm to drive the ArtyBot
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Drive motors given distance using positional control (motors will have
+ *       turned about the same amount at the end)
+ */
 void drive(double distance) {
    int16_t dist_converted = (int16_t) (distance * 9.4); // cm to sens edges
    int16_t pos_diff = getPositionDifference(MSP_BASEADDR);
@@ -207,6 +425,19 @@ void drive(double distance) {
    PWM_Disable(PWM_BASEADDR);
 }
 
+/*
+ * void turn(double arclength)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       arclength: Length of arc in cm for wheels to follow during turn
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Drive motors given arclength using speed control (motors will turn at
+ *       same rate throughout the turn)
+ */
 void turn(double arclength) {
    int16_t dist_converted = (int16_t) (arclength * 9.4); // cm to sens edges
 
@@ -246,6 +477,20 @@ void turn(double arclength) {
    PWM_Disable(PWM_BASEADDR);
 }
 
+/*
+ * void swingTurn(double arclength, int dir)
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       arclength: Length of arc in cm for wheels to follow during turn
+ *       dir:       Direction of turn (0 for left, 1 for right)
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Drive one motor (determined by dir parameter) the given arclength using
+ *       speed control (motor will turn at constant rate throughout the turn)
+ */
 void swingTurn(double arclength, int dir) {
    int16_t dist_converted = (int16_t) (arclength * 9.4); // cm to sens edges
 
@@ -274,9 +519,20 @@ void swingTurn(double arclength, int dir) {
       getMotorPositions(MSP_BASEADDR, motor_pos);
    }
    PWM_Disable(PWM_BASEADDR);
-   delayUntilStop();
 }
 
+/*
+ * void delayUntilStop()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Wait until both motors have stopped turning
+ */
 void delayUntilStop() {
    int motor_speed[2];
    clearSpeedCounters(MSP_BASEADDR);

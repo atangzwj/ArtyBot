@@ -1,9 +1,12 @@
-/*
+/**
  * pidController.c
  *
  *  Created on: Jul 13, 2017
  *      Author: Arvin Tang
- */
+ *
+ *  This file contains functions that use PID controllers to provide duty cycle
+ *  values to drive the ArtyBot motors
+**/
 
 /************ Include Files ************/
 
@@ -34,9 +37,23 @@ static int err_prev_speed[2] = {0, 0};
 
 /************ Function Definitions ************/
 
-// Take position difference between motor1 and motor2 as an int and an array of
-// doubles to store corrected duty cycles for motor1, motor2, respectively
-// Assumes that this function gets called at regular time intervals
+/*
+ * void getPosCorrection(int pos_diff, double duty_cycle[])
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       pos_diff:   Current position difference between motor1 and motor2
+ *       duty_cycle: Array to store new duty cycles for motor1, motor2,
+ *                   respectively
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Uses a PID controller to compute new duty cycles for motor1 and motor2
+ *       with goal of minimizing position difference to 0 and store them in
+ *       duty_cycle. Assumes that this function gets called at regular time
+ *       intervals
+ */
 void getPosCorrection(int pos_diff, double duty_cycle[]) {
    pos_diff_sum += pos_diff;
 
@@ -68,9 +85,24 @@ void getPosCorrection(int pos_diff, double duty_cycle[]) {
    }
 }
 
-// Take desired speed and current speeds of motors and set duty cycles in the
-// double array motor1 and motor2, respectively, to correct for desired speed
-// Assumes that this function gets called at regular time intervals
+/*
+ * void getSpeedCorrection(int speed_sp, int speed[], double duty_cycle[])
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       speed_sp:   Speed set point (desired speed) in RPM
+ *       speed:      Array with current speeds of motor1, motor2, respectively
+ *       duty_cycle: Array for storing new duty cycles for motor1, motor2,
+ *                   respectively
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Uses a PID controller to compute new duty cycles for motor1 and motor2
+ *       with goal of maintaining motor speeds at speed_sp and store them in
+ *       duty_cycle. Assumes that this function gets called at regular time
+ *       intervals
+ */
 void getSpeedCorrection(int speed_sp, int speed[], double duty_cycle[]) {
    int err_m1 = speed_sp - speed[0]; // Current error
    int err_m2 = speed_sp - speed[1];
@@ -101,7 +133,18 @@ void getSpeedCorrection(int speed_sp, int speed[], double duty_cycle[]) {
    }
 }
 
-// Reset accumulated errors and previous errors to 0
+/*
+ * resetErrors()
+ * ------------------------------------------------------------------------
+ * Parameters:
+ *       none
+ *
+ * Return:
+ *       void
+ *
+ * Description:
+ *       Reset accumulated errors and previous errors to 0
+ */
 void resetErrors() {
    pos_diff_sum  = 0;
    pos_diff_prev = 0;
