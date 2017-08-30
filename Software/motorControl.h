@@ -24,9 +24,10 @@
 #define GPIO_0_DEV_ID XPAR_AXI_GPIO_0_DEVICE_ID
 #define GPIO_1_DEV_ID XPAR_AXI_GPIO_1_DEVICE_ID
 
-#define M1_CHANNEL 1
-#define M2_CHANNEL 2
-#define SW_CHANNEL 1
+#define M1_CHANNEL  1
+#define M2_CHANNEL  2
+#define SW_CHANNEL  1
+#define LED_CHANNEL 2
 
 #define MOTOR1_FORWARD  XGpio_DiscreteWrite(xgpio0, M1_CHANNEL, 0x0)
 #define MOTOR1_BACKWARD XGpio_DiscreteWrite(xgpio0, M1_CHANNEL, 0x1)
@@ -41,7 +42,7 @@
 /************ Global Variables ************/
 
 XGpio *xgpio0; // Pmod Bridge
-XGpio *xgpio1; // Switches
+XGpio *xgpio1; // Switches and LEDs
 
 XGpio_Config *xgpio_cfg0;
 XGpio_Config *xgpio_cfg1;

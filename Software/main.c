@@ -33,6 +33,8 @@
 
 #define READ_SW0 XGpio_DiscreteRead(xgpio1, SW_CHANNEL) & 0x1
 
+#define WRITE_LEDS(led) XGpio_DiscreteWrite(xgpio1, LED_CHANNEL, led)
+
 
 /************ Function Prototypes ************/
 
@@ -55,8 +57,8 @@ int main() {
    artyBotInit();
 
 //   drawPolygon(4, 72);
-   avoidWalls();
-//   joystickDrive();
+//   avoidWalls();
+   joystickDrive();
 //   joystickSensorDrive();
 
    artyBotEnd();

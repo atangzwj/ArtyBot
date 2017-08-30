@@ -44,6 +44,7 @@ void initIO() {
    XGpio_SetDataDirection(xgpio0, M1_CHANNEL, 0xC);
    XGpio_SetDataDirection(xgpio0, M2_CHANNEL, 0xC);
    XGpio_SetDataDirection(xgpio1, SW_CHANNEL, 0xF);
+   XGpio_SetDataDirection(xgpio1, LED_CHANNEL, 0x0);
 }
 
 /*
