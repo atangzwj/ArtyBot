@@ -4,7 +4,13 @@
  *  Created on: Jun 29, 2017
  *      Author: Arvin Tang
  *
- *  Main program for the ArtyBot.
+ *  This file contains four demos for the ArtyBot:
+ *      drawPolygon(),
+ *      avoidWalls(),
+ *      joystickDrive(),
+ *      joystickSensorDrive().
+ *  Inside of main(), uncomment the demo that you would like to run.
+ *  drawPolygon() and avoidWalls() wait for sw0 to be toggled on before running
  */
 
 /************ Include Files ************/
@@ -48,33 +54,37 @@ int main() {
 
    artyBotInit();
 
-   int sw0 = READ_SW0;
-   while (sw0) {
-      sw0 = READ_SW0;
-   }
-   while (!sw0) {
-      sw0 = READ_SW0;
-   }
-
-   joystickSensorDrive();
+//   drawPolygon(4, 72);
+//   avoidWalls();
+   joystickDrive();
+//   joystickSensorDrive();
 
    artyBotEnd();
+
    cleanup_platform();
    return 0;
 }
 
-// Drive the bot to trace an n-sided regular polygon with given side length
+// Drive the bot when sw0 toggled on to trace an n-sided regular polygon with
+// given side length
 void drawPolygon(int n, int sideLength) {
+   int sw0 = READ_SW0;
+   while (!sw0) {
+      sw0 = READ_SW0;
+   }
    for (int i = 0; i < n; i++) {
       driveForward(sideLength);
       turnRight(360 / n);
    }
 }
 
+// Returns logical true if PmodMAXSONAR detects object within 8 inches
 int isBlocked() {
    return getDistance(SENSOR_BASEADDR, CLK_FREQ) < 8;
 }
 
+// Drive the bot forward when sw0 toggled on, if obstacle detected in front,
+// turn 90 degrees to the right until path is clear and then move forward
 void avoidWalls() {
    int sw0 = READ_SW0;
    while (!sw0) {
@@ -83,12 +93,13 @@ void avoidWalls() {
    while (sw0) {
       driveForwardContinuous(1);
       while (isBlocked()) {
-         turnRightContinuous(10);
+         turnRight(90);
       }
       sw0 = READ_SW0;
    }
 }
 
+// Drive the bot forward, backward, left, or right based on PmodJSTK2 input
 void joystickDrive() {
    PmodJSTK2 *pmodJSTK2 = (PmodJSTK2*) calloc(1, sizeof(PmodJSTK2));
    JSTK2_begin(pmodJSTK2, PMODJSTK2_SPI_ADDR, PMODJSTK2_GPIO_ADDR, CLK_FREQ);
@@ -117,6 +128,8 @@ void joystickDrive() {
    JSTK2_end(pmodJSTK2);
 }
 
+// Drive the bot forward, backward, left, or right based on PmodJSTK2 input
+// If obstacle detected in front, driving forward will be disabled
 void joystickSensorDrive() {
    PmodJSTK2 *pmodJSTK2 = (PmodJSTK2*) calloc(1, sizeof(PmodJSTK2));
    JSTK2_begin(pmodJSTK2, PMODJSTK2_SPI_ADDR, PMODJSTK2_GPIO_ADDR, CLK_FREQ);
