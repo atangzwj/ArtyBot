@@ -56,8 +56,8 @@ int main() {
 
 //   drawPolygon(4, 72);
 //   avoidWalls();
-   joystickDrive();
-//   joystickSensorDrive();
+//   joystickDrive();
+   joystickSensorDrive();
 
    artyBotEnd();
 
